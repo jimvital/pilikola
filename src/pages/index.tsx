@@ -1,23 +1,15 @@
 import React from "react";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
-
-import { Layout } from "@/common";
-
-import "./index.css";
-
-const darkTheme = createTheme({
-  palette: {
-    mode: "dark",
-  },
-});
+import Head from "next/head";
 
 const Home: React.FC = () => {
   return (
-    <ThemeProvider theme={darkTheme}>
-      <CssBaseline />
-      <Layout />
-    </ThemeProvider>
+    <div>
+      <Head>
+        <title>Pilikola</title>
+        <link rel="favicon" href="/public/favicon.ico" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      </Head>
+    </div>
   );
 };
 

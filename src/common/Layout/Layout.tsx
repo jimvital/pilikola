@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from "react";
 import { Grid } from "@mui/material";
-import Drawer from "./Drawer";
+import { Drawer } from "./Drawer";
 
 const Layout: React.FC<PropsWithChildren> = ({ children }) => {
   return (
