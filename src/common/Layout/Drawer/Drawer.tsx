@@ -18,16 +18,16 @@ import {
 } from "@mui/material";
 import {
   Add,
-  History,
   Home,
   MoreVert,
   Person,
   Search,
+  TrendingUp,
 } from "@mui/icons-material";
 
 const Drawer: React.FC = () => {
   return (
-    <Stack height="100%" padding="24px">
+    <Stack height="100vh" padding="24px">
       <Typography variant="h4">PILIKOLA</Typography>
       <List>
         <ListItem disablePadding>
@@ -41,17 +41,17 @@ const Drawer: React.FC = () => {
         <ListItem disablePadding>
           <ListItemButton>
             <ListItemIcon>
-              <History />
+              <TrendingUp />
             </ListItemIcon>
-            <ListItemText>History</ListItemText>
+            <ListItemText>Popular Lists</ListItemText>
           </ListItemButton>
         </ListItem>
       </List>
       <Button variant="contained" startIcon={<Add />}>
-        Create collection
+        Create Watchlist
       </Button>
-      <Divider sx={{ margin: "16px 0" }} />
-      <Typography>My lists</Typography>
+      <Divider className="mx-0 my-[16px]" />
+      <Typography>My Lists</Typography>
       <TextField
         placeholder="Search"
         size="small"
@@ -65,7 +65,7 @@ const Drawer: React.FC = () => {
           ),
         }}
       />
-      <Card sx={{ marginTop: "auto" }}>
+      <Card className="mt-auto">
         <CardHeader
           avatar={<Person />}
           action={

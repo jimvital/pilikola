@@ -4,7 +4,7 @@ import { Drawer } from "./Drawer";
 
 const Layout: React.FC<PropsWithChildren> = ({ children }) => {
   return (
-    <Grid container spacing={1} height="100vh">
+    <Grid container spacing={1}>
       <Grid item width="25%" bgcolor="#000000">
         <Drawer />
       </Grid>
