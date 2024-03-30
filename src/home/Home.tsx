@@ -40,7 +40,7 @@ const Home: React.FC = () => {
           Search
         </Button>
       </Box>
-      <MovieList />
+      <MovieList className="flex-1 overflow-y-auto" />
     </Box>
   );
 };
