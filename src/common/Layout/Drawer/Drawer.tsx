@@ -1,6 +1,6 @@
 import React from "react";
+import { useRouter } from "next/navigation";
 import {
-  Autocomplete,
   Button,
   Card,
   CardHeader,
@@ -26,11 +26,13 @@ import {
 } from "@mui/icons-material";
 
 const Drawer: React.FC = () => {
+  const router = useRouter();
+
   return (
     <Stack height="100vh" padding="24px">
       <Typography variant="h4">PILIKOLA</Typography>
       <List>
-        <ListItem disablePadding>
+        <ListItem disablePadding onClick={() => router.push("/")}>
           <ListItemButton>
             <ListItemIcon>
               <Home />
@@ -47,7 +49,11 @@ const Drawer: React.FC = () => {
           </ListItemButton>
         </ListItem>
       </List>
-      <Button variant="contained" startIcon={<Add />}>
+      <Button
+        variant="contained"
+        startIcon={<Add />}
+        onClick={() => router.push("/watchlist/create")}
+      >
         Create Watchlist
       </Button>
       <Divider className="mx-0 my-[16px]" />

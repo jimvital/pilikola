@@ -1,4 +1,5 @@
 import React from "react";
+import { isEmpty } from "lodash";
 import {
   Box,
   Card,
@@ -7,14 +8,25 @@ import {
   Rating,
   Typography,
 } from "@mui/material";
-import { BookmarkAddOutlined } from "@mui/icons-material";
+import { BookmarkAddOutlined, CheckBoxOutlineBlank } from "@mui/icons-material";
 
-const MovieCard: React.FC = () => {
+import { IMultiSelect } from "@/pages/movies/types";
+
+interface MovieCardProps {
+  multiSelect?: IMultiSelect;
+}
+
+const MovieCard: React.FC<MovieCardProps> = ({ multiSelect }) => {
+  const isMultiSelect = !isEmpty(multiSelect);
+
   return (
     <Card className="w-[165px]">
       <Box height="240px" bgcolor="#2D2D2D" className="relative">
-        <IconButton color="secondary" className="absolute right-0">
-          <BookmarkAddOutlined />
+        <IconButton
+          color={isMultiSelect ? "primary" : "secondary"}
+          className="absolute right-0"
+        >
+          {isMultiSelect ? <CheckBoxOutlineBlank /> : <BookmarkAddOutlined />}
         </IconButton>
       </Box>
       <CardContent>
