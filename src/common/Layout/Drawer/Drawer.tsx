@@ -1,12 +1,15 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import {
+  Avatar,
+  Box,
   Button,
   Card,
   CardHeader,
   Divider,
   IconButton,
   InputAdornment,
+  Link,
   List,
   ListItem,
   ListItemButton,
@@ -71,6 +74,12 @@ const Drawer: React.FC = () => {
           ),
         }}
       />
+      <Box display="flex" gap="8px" alignItems="center">
+        <Avatar className="w-[24px] h-[24px] text-sm">W</Avatar>
+        <Link href="/watchlist/w1" underline="hover" variant="body2">
+          Watchlist 1
+        </Link>
+      </Box>
       <Card className="mt-auto">
         <CardHeader
           avatar={<Person />}

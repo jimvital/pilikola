@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, Card, CardContent, Typography } from "@mui/material";
 
 import { MovieList } from "@/movies";
 
 const Home: React.FC = () => {
+  const [, addToWatchlist] = useState<object>({});
+
   return (
     <Box height="100vh" padding="24px" display="flex" flexDirection="column">
       <Card variant="outlined" className="bg-[#2D2D2D] mb-[16px]">
@@ -12,7 +14,11 @@ const Home: React.FC = () => {
           <Typography>Browse movies and add them to watchlists</Typography>
         </CardContent>
       </Card>
-      <MovieList className="flex-1 overflow-y-auto" hasSearch />
+      <MovieList
+        className="flex-1 overflow-y-auto"
+        hasSearch
+        addToWatchlist={addToWatchlist}
+      />
     </Box>
   );
 };

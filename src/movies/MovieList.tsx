@@ -8,21 +8,25 @@ import {
 } from "@mui/material";
 import { Search } from "@mui/icons-material";
 
-import { IMultiSelect } from "@/pages/movies/types";
+import { IMultiSelect, IWatched } from "@/pages/movies/types";
 import MovieCard from "./MovieCard";
 
 interface MovieListProps {
   className?: string;
   title?: string;
   hasSearch?: boolean;
+  addToWatchlist?: (movie: object) => void;
   multiSelect?: IMultiSelect;
+  watched?: IWatched;
 }
 
 const MovieList: React.FC<MovieListProps> = ({
   className,
   title,
   hasSearch = false,
+  addToWatchlist,
   multiSelect,
+  watched,
 }) => {
   return (
     <Box>
@@ -53,7 +57,11 @@ const MovieList: React.FC<MovieListProps> = ({
         </Box>
       ) : null}
       <Box display="flex" gap="24px" className={className}>
-        <MovieCard multiSelect={multiSelect} />
+        <MovieCard
+          addToWatchlist={addToWatchlist}
+          multiSelect={multiSelect}
+          watched={watched}
+        />
       </Box>
     </Box>
   );
