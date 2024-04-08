@@ -3,14 +3,14 @@ import { Box, IconButton, Typography } from "@mui/material";
 import { AddCircleOutline } from "@mui/icons-material";
 
 import WatchlistMovieItem from "./WatchlistMovieItem";
-import AddMovieModal from "./AddMovieModal";
+import AddMovieDialog from "./AddMovieDialog";
 
 const ManageWatchlistMovies: React.FC = () => {
   const [openAddModal, setOpenAddModal] = useState(false);
 
   return (
     <>
-      <AddMovieModal
+      <AddMovieDialog
         open={openAddModal}
         onClose={() => setOpenAddModal(false)}
       />

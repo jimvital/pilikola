@@ -32,7 +32,7 @@ const MovieList: React.FC<MovieListProps> = ({
         </Typography>
       ) : null}
       {hasSearch ? (
-        <Box display="flex" alignItems="center" gap="16px" margin="24px 0">
+        <Box display="flex" alignItems="center" gap="16px" marginBottom="16px">
           <TextField
             placeholder="Search movies by title"
             size="small"

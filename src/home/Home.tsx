@@ -6,7 +6,7 @@ import { MovieList } from "@/movies";
 const Home: React.FC = () => {
   return (
     <Box height="100vh" padding="24px" display="flex" flexDirection="column">
-      <Card variant="outlined" className="bg-[#2D2D2D]">
+      <Card variant="outlined" className="bg-[#2D2D2D] mb-[16px]">
         <CardContent>
           <Typography variant="h4">Welcome to Pilikola</Typography>
           <Typography>Browse movies and add them to watchlists</Typography>

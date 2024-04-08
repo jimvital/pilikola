@@ -1,6 +1,14 @@
 import React, { useState } from "react";
-import { Button, Modal, Paper } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+} from "@mui/material";
 import { MovieList } from "@/movies";
+import { Close } from "@mui/icons-material";
 
 interface AddMovieModalProps {
   open: boolean;
@@ -11,22 +19,18 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ open, onClose }) => {
   const [selectedItems, setSelectedItems] = useState<unknown[]>([]);
 
   return (
-    <Modal open={open} onClose={onClose}>
-      <Paper
-        elevation={2}
-        className={`
-            absolute 
-            top-[50%] left-[50%] 
-            translate-x-[-50%] translate-y-[-50%] 
-            w-3/4 p-[24px]
-        `}
-      >
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
+      <DialogTitle>Add movies to current watchlist</DialogTitle>
+      <IconButton onClick={onClose} className="absolute top-[8px] right-[8px]">
+        <Close />
+      </IconButton>
+      <DialogContent className="px-[24px] pt-0 pb-[10px]">
         <MovieList
           hasSearch
-          title="Add movies to current watchlist"
           multiSelect={{ selectedItems, setSelectedItems }}
-          className="mb-[24px]"
         />
+      </DialogContent>
+      <DialogActions>
         <Button
           variant="contained"
           fullWidth
@@ -34,8 +38,8 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ open, onClose }) => {
         >
           Add ({`${selectedItems.length} movie/s selected`})
         </Button>
-      </Paper>
-    </Modal>
+      </DialogActions>
+    </Dialog>
   );
 };
 
