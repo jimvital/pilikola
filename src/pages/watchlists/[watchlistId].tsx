@@ -25,7 +25,7 @@ const WatchlistDetailsPage: React.FC = () => {
           <Button
             variant="contained"
             color="secondary"
-            onClick={() => router.push("/watchlist/edit/w1")}
+            onClick={() => router.push("/watchlists/edit/w1")}
           >
             Edit
           </Button>

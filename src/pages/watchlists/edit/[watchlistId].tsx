@@ -23,7 +23,7 @@ const EditWatchlistPage: React.FC = () => {
       <Box display="flex" gap="16px">
         <IconButton
           color="primary"
-          onClick={() => router.push("/watchlist/w1")}
+          onClick={() => router.push("/watchlists/w1")}
         >
           <ArrowBackIosNew />
         </IconButton>
