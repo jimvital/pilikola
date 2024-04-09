@@ -21,10 +21,7 @@ const EditWatchlistPage: React.FC = () => {
       className="overflow-y-auto"
     >
       <Box display="flex" gap="16px">
-        <IconButton
-          color="primary"
-          onClick={() => router.push("/watchlists/w1")}
-        >
+        <IconButton color="primary" onClick={() => router.back()}>
           <ArrowBackIosNew />
         </IconButton>
         <Typography variant="h4">{`Edit "watchlist name"`}</Typography>
