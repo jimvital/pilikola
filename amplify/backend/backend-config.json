@@ -1,0 +1,36 @@
+{
+  "parameters": {
+    "AMPLIFY_function_pilikola2024CustomMessage_EMAILMESSAGE": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "pilikola2024CustomMessage"
+        }
+      ]
+    },
+    "AMPLIFY_function_pilikola2024CustomMessage_EMAILSUBJECT": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "pilikola2024CustomMessage"
+        }
+      ]
+    },
+    "AMPLIFY_function_pilikola2024CustomMessage_REDIRECTURL": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "pilikola2024CustomMessage"
+        }
+      ]
+    },
+    "AMPLIFY_function_pilikola2024PostConfirmation_GROUP": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "pilikola2024PostConfirmation"
+        }
+      ]
+    }
+  }
+}
