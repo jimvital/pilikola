@@ -19,14 +19,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import {
-  Add,
-  Home,
-  MoreVert,
-  Person,
-  Search,
-  Theaters,
-} from "@mui/icons-material";
+import { Add, Home, Search, Theaters } from "@mui/icons-material";
+import UserCard from "./UserCard";
 
 const Drawer: React.FC = () => {
   const router = useRouter();
@@ -87,17 +81,7 @@ const Drawer: React.FC = () => {
           </Box>
         </>
       )}
-      <Card className="mt-auto">
-        <CardHeader
-          avatar={<Person />}
-          action={
-            <IconButton>
-              <MoreVert />
-            </IconButton>
-          }
-          title="Guest"
-        />
-      </Card>
+      <UserCard />
     </Stack>
   );
 };

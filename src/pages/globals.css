@@ -24,3 +24,11 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+body {
+  background-color: var(--amplify-colors-black);
+
+  [data-amplify-authenticator] {
+    height: 100vh;
+  }
+}
