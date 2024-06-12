@@ -1,4 +1,53 @@
 {
+  "auth": {
+    "pilikola2024": {
+      "customAuth": false,
+      "dependsOn": [
+        {
+          "attributes": [
+            "Arn",
+            "Name"
+          ],
+          "category": "function",
+          "resourceName": "pilikola2024CustomMessage",
+          "triggerProvider": "Cognito"
+        }
+      ],
+      "frontendAuthConfig": {
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyCharacters": [],
+          "passwordPolicyMinLength": 8
+        },
+        "signupAttributes": [
+          "BIRTHDATE",
+          "EMAIL",
+          "NAME",
+          "NICKNAME",
+          "PREFERRED_USERNAME"
+        ],
+        "socialProviders": [],
+        "usernameAttributes": [
+          "EMAIL"
+        ],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito"
+    }
+  },
+  "function": {
+    "pilikola2024CustomMessage": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
   "parameters": {
     "AMPLIFY_function_pilikola2024CustomMessage_EMAILMESSAGE": {
       "usedBy": [
@@ -17,6 +66,22 @@
       ]
     },
     "AMPLIFY_function_pilikola2024CustomMessage_REDIRECTURL": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "pilikola2024CustomMessage"
+        }
+      ]
+    },
+    "AMPLIFY_function_pilikola2024CustomMessage_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "pilikola2024CustomMessage"
+        }
+      ]
+    },
+    "AMPLIFY_function_pilikola2024CustomMessage_s3Key": {
       "usedBy": [
         {
           "category": "function",

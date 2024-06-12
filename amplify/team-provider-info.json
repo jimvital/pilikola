@@ -9,17 +9,21 @@
       "UnauthRoleName": "amplify-pilikola-dev-1e72a-unauthRole",
       "StackName": "amplify-pilikola-dev-1e72a",
       "StackId": "arn:aws:cloudformation:ap-southeast-1:975050003550:stack/amplify-pilikola-dev-1e72a/075b3740-279a-11ef-8ca9-027ae529c857",
-      "AmplifyAppId": "d2av48trct2sgs"
+      "AmplifyAppId": "d2av48trct2sgs",
+      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-pilikola-dev-1e72a-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
     },
     "categories": {
       "auth": {
-        "pilikola2024": {}
+        "pilikola2024": {},
+        "pilikola47e604ca": {}
       },
       "function": {
         "pilikola2024CustomMessage": {
           "REDIRECTURL": "http://localhost:3000/",
           "EMAILSUBJECT": "Pilikola | Account Confirmation",
-          "EMAILMESSAGE": "Confirm your account"
+          "EMAILMESSAGE": "Confirm your account",
+          "deploymentBucketName": "amplify-pilikola-dev-1e72a-deployment",
+          "s3Key": "amplify-builds/pilikola2024CustomMessage-787a6667374f5a4c744a-build.zip"
         },
         "pilikola2024PostConfirmation": {
           "GROUP": "pilikola2024group"
