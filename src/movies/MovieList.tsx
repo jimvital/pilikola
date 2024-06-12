@@ -12,6 +12,8 @@ import { IMultiSelect, IWatched } from "@/pages/movies/types";
 import MovieCard from "./MovieCard";
 
 interface MovieListProps {
+  movies?: Movie[];
+  containerClassName?: string;
   className?: string;
   title?: string;
   hasSearch?: boolean;
@@ -21,6 +23,8 @@ interface MovieListProps {
 }
 
 const MovieList: React.FC<MovieListProps> = ({
+  movies = [],
+  containerClassName,
   className,
   title,
   hasSearch = false,
@@ -29,7 +33,7 @@ const MovieList: React.FC<MovieListProps> = ({
   watched,
 }) => {
   return (
-    <Box>
+    <Box className={containerClassName}>
       {title ? (
         <Typography variant="body1" fontWeight="bold" marginBottom="16px">
           {title}
@@ -57,11 +61,15 @@ const MovieList: React.FC<MovieListProps> = ({
         </Box>
       ) : null}
       <Box display="flex" gap="24px" className={className}>
-        <MovieCard
-          addToWatchlist={addToWatchlist}
-          multiSelect={multiSelect}
-          watched={watched}
-        />
+        {movies.map((movie) => (
+          <MovieCard
+            key={movie.id}
+            data={movie}
+            addToWatchlist={addToWatchlist}
+            multiSelect={multiSelect}
+            watched={watched}
+          />
+        ))}
       </Box>
     </Box>
   );

@@ -1,10 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Card, CardContent, Typography } from "@mui/material";
 
 import { MovieList } from "@/movies";
 
 const Home: React.FC = () => {
   const [, addToWatchlist] = useState<object>({});
+  const [trendingMovies, setTrendingMovies] = useState<Movie[]>([]);
+
+  const fetchData = async () => {
+    const response = await fetch("/api/movies/trending", {
+      method: "GET",
+    });
+    const data = await response.json();
+
+    setTrendingMovies(data);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <Box height="100vh" padding="24px" display="flex" flexDirection="column">
@@ -15,7 +29,9 @@ const Home: React.FC = () => {
         </CardContent>
       </Card>
       <MovieList
-        className="flex-1 overflow-y-auto"
+        movies={trendingMovies}
+        containerClassName="flex flex-col max-h-[calc(100%-124px)]"
+        className="flex-wrap overflow-y-auto"
         hasSearch
         addToWatchlist={addToWatchlist}
       />
