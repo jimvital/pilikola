@@ -36,6 +36,7 @@ const Home: React.FC = () => {
         containerClassName="flex flex-col max-h-[calc(100%-124px)]"
         className="flex-wrap overflow-y-auto"
         hasSearch
+        showTrending
         addToWatchlist={addToWatchlist}
       />
     </Box>

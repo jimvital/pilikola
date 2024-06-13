@@ -19,7 +19,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       runtime: movie.runtime,
       summary: movie.overview,
       rating: ((movie.vote_average || 0) / 10) * 5,
-      cast: movie.credits?.cast.slice(0, 5).map((member: any) => ({
+      cast: movie.credits?.cast.slice(0, 8).map((member: any) => ({
         id: `${member.id}`,
         name: member.name,
         role: member.character,

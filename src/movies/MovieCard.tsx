@@ -93,11 +93,11 @@ const MovieCard: React.FC<MovieCardProps> = ({
         {renderAction()}
       </Box>
       <CardContent>
-        <Link variant="h5" href={`/movies/${data?.id}`}>
+        <Link variant="h6" href={`/movies/${data?.id}`}>
           {data?.title}
         </Link>
         <Typography variant="body2" color="text.secondary">
-          {`(${data?.releaseDate})`}
+          {`(${data?.releaseDate || "N/A"})`}
         </Typography>
         <Rating value={data?.rating} precision={0.25} readOnly />
       </CardContent>

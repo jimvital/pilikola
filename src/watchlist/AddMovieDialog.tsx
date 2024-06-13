@@ -21,12 +21,14 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ open, onClose }) => {
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
       <DialogTitle>Add movies to current watchlist</DialogTitle>
-      <IconButton onClick={onClose} className="absolute top-[8px] right-[8px]">
+      <IconButton onClick={onClose} className="!absolute top-[8px] right-[8px]">
         <Close />
       </IconButton>
       <DialogContent className="px-[24px] pt-0 pb-[10px]">
         <MovieList
           hasSearch
+          containerClassName="flex flex-col max-h-[400px]"
+          className="flex-wrap overflow-y-auto"
           multiSelect={{ selectedItems, setSelectedItems }}
         />
       </DialogContent>
