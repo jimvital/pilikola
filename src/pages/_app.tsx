@@ -6,22 +6,21 @@ import {
   ThemeProvider as MuiThemeProvider,
   createTheme,
 } from "@mui/material/styles";
+import { Box } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 import {
   Authenticator,
   ThemeProvider as AuthThemeProvider,
   defaultDarkModeOverride,
-  View,
 } from "@aws-amplify/ui-react";
 
 import { Layout } from "@/common";
+import ReactQueryClientProvider from "@/contexts/ReactQueryClientProvider";
 import logo from "@/assets/pilikola-logo.png";
-
 import awsExports from "@/aws-exports";
 
 import "@aws-amplify/ui-react/styles.css";
 import "./globals.css";
-import { Box } from "@mui/material";
 
 Amplify.configure(awsExports);
 
@@ -36,7 +35,7 @@ const darkAuthTheme = {
   overrides: [defaultDarkModeOverride],
 };
 
-const components = {
+const authComponents = {
   Header() {
     return (
       <Box
@@ -59,29 +58,31 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         <link rel="favicon" href="/public/favicon.ico" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
-      <AuthThemeProvider theme={darkAuthTheme} colorMode="system">
-        <Authenticator
-          components={components}
-          loginMechanisms={["email"]}
-          initialState="signIn"
-          signUpAttributes={[
-            "birthdate",
-            "email",
-            "name",
-            "nickname",
-            "preferred_username",
-          ]}
-        >
-          <Authenticator.Provider>
-            <MuiThemeProvider theme={darkMuiTheme}>
-              <CssBaseline />
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
-            </MuiThemeProvider>
-          </Authenticator.Provider>
-        </Authenticator>
-      </AuthThemeProvider>
+      <ReactQueryClientProvider>
+        <AuthThemeProvider theme={darkAuthTheme} colorMode="system">
+          <Authenticator
+            components={authComponents}
+            loginMechanisms={["email"]}
+            initialState="signIn"
+            signUpAttributes={[
+              "birthdate",
+              "email",
+              "name",
+              "nickname",
+              "preferred_username",
+            ]}
+          >
+            <Authenticator.Provider>
+              <MuiThemeProvider theme={darkMuiTheme}>
+                <CssBaseline />
+                <Layout>
+                  <Component {...pageProps} />
+                </Layout>
+              </MuiThemeProvider>
+            </Authenticator.Provider>
+          </Authenticator>
+        </AuthThemeProvider>
+      </ReactQueryClientProvider>
     </>
   );
 }

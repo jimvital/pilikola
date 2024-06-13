@@ -1,24 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Box, Card, CardContent, Typography } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
 
+import { PageLoader } from "@/common";
 import { MovieList } from "@/movies";
 
 const Home: React.FC = () => {
   const [, addToWatchlist] = useState<object>({});
-  const [trendingMovies, setTrendingMovies] = useState<Movie[]>([]);
 
-  const fetchData = async () => {
+  const fetchTrendingMovies = async () => {
     const response = await fetch("/api/movies/trending", {
       method: "GET",
     });
     const data = await response.json();
 
-    setTrendingMovies(data);
+    return data;
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const { data: trendingMovies, isLoading } = useQuery({
+    queryKey: ["trending"],
+    queryFn: fetchTrendingMovies,
+  });
 
   return (
     <Box height="100vh" padding="24px" display="flex" flexDirection="column">
@@ -28,6 +30,7 @@ const Home: React.FC = () => {
           <Typography>Browse movies and add them to watchlists</Typography>
         </CardContent>
       </Card>
+      {isLoading ? <PageLoader /> : null}
       <MovieList
         movies={trendingMovies}
         containerClassName="flex flex-col max-h-[calc(100%-124px)]"

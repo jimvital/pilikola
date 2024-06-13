@@ -100,7 +100,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
         <Typography variant="body2" color="text.secondary">
           {`(${data?.releaseDate})`}
         </Typography>
-        <Rating value={data?.rating} precision={0.5} readOnly />
+        <Rating value={data?.rating} precision={0.25} readOnly />
       </CardContent>
     </Card>
   );
