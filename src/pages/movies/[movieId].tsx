@@ -1,8 +1,32 @@
 import React from "react";
+import { useRouter } from "next/router";
 import { Box } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
+
+import { PageLoader } from "@/common";
 import { MovieCast, MovieList, MovieSummary } from "@/movies";
 
 const MovieDetailsPage: React.FC = () => {
+  const {
+    query: { movieId },
+  } = useRouter();
+
+  const fetchMovieDetails = async () => {
+    if (!movieId) return {};
+
+    const response = await fetch(`/api/movies/${movieId}`, {
+      method: "GET",
+    });
+    const data = await response.json();
+
+    return data;
+  };
+
+  const { data: movieDetails, isLoading } = useQuery<MovieDetails>({
+    queryKey: ["movies", movieId],
+    queryFn: fetchMovieDetails,
+  });
+
   return (
     <Box
       maxHeight="100vh"
@@ -12,9 +36,10 @@ const MovieDetailsPage: React.FC = () => {
       gap="8px"
       className="overflow-y-auto"
     >
-      <MovieSummary />
-      <MovieCast />
-      <MovieList title="Similar Movies" />
+      {isLoading ? <PageLoader /> : null}
+      <MovieSummary movieDetails={movieDetails || ({} as MovieDetails)} />
+      <MovieCast movieCast={movieDetails?.cast || []} />
+      <MovieList title="Recommended" movies={movieDetails?.recommendations} />
     </Box>
   );
 };

@@ -18,13 +18,13 @@ type MovieDetails = {
   title: string;
   posterUrl: string;
   releaseDate: string;
-  genre: string[];
+  genres: string[];
   runtime: number;
   summary: string;
   rating: number;
   cast: MovieCast[];
   recommendations: MovieRecommendation[];
-  watchedBy: string[];
+  isWatched?: boolean;
 };
 
 type Movie = {
@@ -33,12 +33,25 @@ type Movie = {
   posterUrl: string;
   releaseDate: string;
   rating: number;
-  watchedBy?: string[];
+  isWatched?: boolean;
 };
 
 type Watchlist = {
-  id: ID;
+  id: string;
   name: string;
   description: string;
   movies: Movie[];
+};
+
+type UserWatchlist = {
+  id: string;
+  name: string;
+};
+
+type User = {
+  id: string;
+  cognitoId: string;
+  name: string;
+  watchlists: UserWatchlist[];
+  globalWatched: string[];
 };

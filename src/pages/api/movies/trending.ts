@@ -1,5 +1,5 @@
-import fetchTmdb from "@/utils/fetchTmdb";
 import { NextApiRequest, NextApiResponse } from "next";
+import fetchTmdb from "@/utils/fetchTmdb";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -15,7 +15,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     return res.status(200).json(top10);
   } catch (error) {
-    return res.status(500).send({});
+    return res.status(500).send({ message: "Something went wrong!" });
   }
 };
 
