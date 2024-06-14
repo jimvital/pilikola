@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { generateClient } from "aws-amplify/api";
 import { Card, CardHeader, IconButton, Menu, MenuItem } from "@mui/material";
 import { MoreVert, Person } from "@mui/icons-material";
 import { useAuthenticator } from "@aws-amplify/ui-react";
@@ -7,20 +8,55 @@ import {
   FetchUserAttributesOutput,
 } from "aws-amplify/auth";
 
+import { createUser } from "@/graphql/mutations";
+import { getUser } from "@/graphql/queries";
+
 const UserCard: React.FC = () => {
-  const { signOut } = useAuthenticator();
+  const {
+    user: { userId },
+    signOut,
+  } = useAuthenticator((context) => [context.user]);
 
   const [userDetails, setUserDetails] = useState<FetchUserAttributesOutput>({});
 
   useEffect(() => {
-    async function getUserDetails() {
-      const response = await fetchUserAttributes();
+    const syncUserDetails = async () => {
+      try {
+        const data = await fetchUserAttributes();
+        const { name, preferred_username: username } = data;
 
-      setUserDetails(response);
-    }
+        const client = generateClient();
 
-    getUserDetails();
-  }, []);
+        const {
+          data: { getUser: currentUser },
+        }: any = await client.graphql({
+          query: getUser,
+          variables: {
+            cognitoId: userId,
+          },
+        });
+
+        if (!currentUser) {
+          await client.graphql({
+            query: createUser,
+            variables: {
+              input: {
+                cognitoId: userId,
+                name,
+                username,
+              },
+            },
+          });
+        }
+
+        setUserDetails(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    syncUserDetails();
+  }, [userId]);
 
   const handleSignOut = () => {
     handleClose();

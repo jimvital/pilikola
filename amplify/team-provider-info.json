@@ -23,11 +23,14 @@
           "EMAILSUBJECT": "Pilikola | Account Confirmation",
           "EMAILMESSAGE": "Confirm your account",
           "deploymentBucketName": "amplify-pilikola-dev-1e72a-deployment",
-          "s3Key": "amplify-builds/pilikola2024CustomMessage-787a6667374f5a4c744a-build.zip"
+          "s3Key": "amplify-builds/pilikola2024CustomMessage-4e475a4643436976706b-build.zip"
         },
         "pilikola2024PostConfirmation": {
           "GROUP": "pilikola2024group"
         }
+      },
+      "api": {
+        "pilikola": {}
       }
     }
   }
