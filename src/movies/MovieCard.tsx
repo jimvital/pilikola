@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import {
   BookmarkAddOutlined,
+  CheckBox,
   CheckBoxOutlineBlank,
   VisibilityOff,
 } from "@mui/icons-material";
@@ -48,15 +49,25 @@ const MovieCard: React.FC<MovieCardProps> = ({
     }
 
     if (isMultiSelect) {
-      const { setSelectedItems } = multiSelect;
+      const { selectedItems, setSelectedItems } = multiSelect;
+
+      const isSelected = !!selectedItems.find(({ id }) => data?.id === id);
 
       return (
         <IconButton
           color="secondary"
           className="absolute right-0"
-          onClick={() => setSelectedItems([])}
+          onClick={() => {
+            setSelectedItems((prev) => {
+              if (isSelected) {
+                return prev.filter(({ id }) => id !== data?.id);
+              }
+
+              return [...prev, data];
+            });
+          }}
         >
-          <CheckBoxOutlineBlank />
+          {isSelected ? <CheckBox /> : <CheckBoxOutlineBlank />}
         </IconButton>
       );
     }

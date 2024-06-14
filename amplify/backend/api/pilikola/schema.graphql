@@ -9,16 +9,17 @@ type User @model {
   cognitoId: ID! @primaryKey
   name: String!
   username: String
-  watchlists: [Watchlist] @hasMany
-  globalWatched: [Movie] @hasMany
+  watchlists: [Watchlist] @hasMany(indexName: "byUser", fields: ["cognitoId"])
+  allWatched: [Movie] @manyToMany(relationName: "UserMovies")
 }
 
 type Watchlist @model {
   id: ID!
   name: String!
   description: String
-  movies: [Movie] @hasMany
-  user: User @belongsTo
+  movies: [Movie] @manyToMany(relationName: "WatchlistMovies")
+  userId: ID! @index(name: "byUser")
+  user: User @belongsTo(fields: ["userId"])
 }
 
 type Movie @model {
@@ -27,6 +28,7 @@ type Movie @model {
   title: String!
   releaseDate: String
   rating: Float
-  runtime: Float
   posterUrl: String
+  watchedBy: [User] @manyToMany(relationName: "UserMovies")
+  listedIn: [Watchlist] @manyToMany(relationName: "WatchlistMovies")
 }

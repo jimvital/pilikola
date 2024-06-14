@@ -11,7 +11,7 @@ export const onCreateUser = /* GraphQL */ `
         nextToken
         __typename
       }
-      globalWatched {
+      allWatched {
         nextToken
         __typename
       }
@@ -31,7 +31,7 @@ export const onUpdateUser = /* GraphQL */ `
         nextToken
         __typename
       }
-      globalWatched {
+      allWatched {
         nextToken
         __typename
       }
@@ -51,7 +51,7 @@ export const onDeleteUser = /* GraphQL */ `
         nextToken
         __typename
       }
-      globalWatched {
+      allWatched {
         nextToken
         __typename
       }
@@ -73,6 +73,7 @@ export const onCreateWatchlist = /* GraphQL */ `
         nextToken
         __typename
       }
+      userId
       user {
         cognitoId
         name
@@ -83,7 +84,6 @@ export const onCreateWatchlist = /* GraphQL */ `
       }
       createdAt
       updatedAt
-      userWatchlistsCognitoId
       __typename
     }
   }
@@ -100,6 +100,7 @@ export const onUpdateWatchlist = /* GraphQL */ `
         nextToken
         __typename
       }
+      userId
       user {
         cognitoId
         name
@@ -110,7 +111,6 @@ export const onUpdateWatchlist = /* GraphQL */ `
       }
       createdAt
       updatedAt
-      userWatchlistsCognitoId
       __typename
     }
   }
@@ -127,6 +127,7 @@ export const onDeleteWatchlist = /* GraphQL */ `
         nextToken
         __typename
       }
+      userId
       user {
         cognitoId
         name
@@ -137,7 +138,6 @@ export const onDeleteWatchlist = /* GraphQL */ `
       }
       createdAt
       updatedAt
-      userWatchlistsCognitoId
       __typename
     }
   }
@@ -150,12 +150,17 @@ export const onCreateMovie = /* GraphQL */ `
       title
       releaseDate
       rating
-      runtime
       posterUrl
+      watchedBy {
+        nextToken
+        __typename
+      }
+      listedIn {
+        nextToken
+        __typename
+      }
       createdAt
       updatedAt
-      userGlobalWatchedCognitoId
-      watchlistMoviesId
       __typename
     }
   }
@@ -168,12 +173,17 @@ export const onUpdateMovie = /* GraphQL */ `
       title
       releaseDate
       rating
-      runtime
       posterUrl
+      watchedBy {
+        nextToken
+        __typename
+      }
+      listedIn {
+        nextToken
+        __typename
+      }
       createdAt
       updatedAt
-      userGlobalWatchedCognitoId
-      watchlistMoviesId
       __typename
     }
   }
@@ -186,12 +196,218 @@ export const onDeleteMovie = /* GraphQL */ `
       title
       releaseDate
       rating
-      runtime
       posterUrl
+      watchedBy {
+        nextToken
+        __typename
+      }
+      listedIn {
+        nextToken
+        __typename
+      }
       createdAt
       updatedAt
-      userGlobalWatchedCognitoId
-      watchlistMoviesId
+      __typename
+    }
+  }
+`;
+export const onCreateUserMovies = /* GraphQL */ `
+  subscription OnCreateUserMovies(
+    $filter: ModelSubscriptionUserMoviesFilterInput
+  ) {
+    onCreateUserMovies(filter: $filter) {
+      id
+      userCognitoId
+      movieId
+      user {
+        cognitoId
+        name
+        username
+        createdAt
+        updatedAt
+        __typename
+      }
+      movie {
+        id
+        tmdbId
+        title
+        releaseDate
+        rating
+        posterUrl
+        createdAt
+        updatedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateUserMovies = /* GraphQL */ `
+  subscription OnUpdateUserMovies(
+    $filter: ModelSubscriptionUserMoviesFilterInput
+  ) {
+    onUpdateUserMovies(filter: $filter) {
+      id
+      userCognitoId
+      movieId
+      user {
+        cognitoId
+        name
+        username
+        createdAt
+        updatedAt
+        __typename
+      }
+      movie {
+        id
+        tmdbId
+        title
+        releaseDate
+        rating
+        posterUrl
+        createdAt
+        updatedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteUserMovies = /* GraphQL */ `
+  subscription OnDeleteUserMovies(
+    $filter: ModelSubscriptionUserMoviesFilterInput
+  ) {
+    onDeleteUserMovies(filter: $filter) {
+      id
+      userCognitoId
+      movieId
+      user {
+        cognitoId
+        name
+        username
+        createdAt
+        updatedAt
+        __typename
+      }
+      movie {
+        id
+        tmdbId
+        title
+        releaseDate
+        rating
+        posterUrl
+        createdAt
+        updatedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onCreateWatchlistMovies = /* GraphQL */ `
+  subscription OnCreateWatchlistMovies(
+    $filter: ModelSubscriptionWatchlistMoviesFilterInput
+  ) {
+    onCreateWatchlistMovies(filter: $filter) {
+      id
+      watchlistId
+      movieId
+      watchlist {
+        id
+        name
+        description
+        userId
+        createdAt
+        updatedAt
+        __typename
+      }
+      movie {
+        id
+        tmdbId
+        title
+        releaseDate
+        rating
+        posterUrl
+        createdAt
+        updatedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateWatchlistMovies = /* GraphQL */ `
+  subscription OnUpdateWatchlistMovies(
+    $filter: ModelSubscriptionWatchlistMoviesFilterInput
+  ) {
+    onUpdateWatchlistMovies(filter: $filter) {
+      id
+      watchlistId
+      movieId
+      watchlist {
+        id
+        name
+        description
+        userId
+        createdAt
+        updatedAt
+        __typename
+      }
+      movie {
+        id
+        tmdbId
+        title
+        releaseDate
+        rating
+        posterUrl
+        createdAt
+        updatedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteWatchlistMovies = /* GraphQL */ `
+  subscription OnDeleteWatchlistMovies(
+    $filter: ModelSubscriptionWatchlistMoviesFilterInput
+  ) {
+    onDeleteWatchlistMovies(filter: $filter) {
+      id
+      watchlistId
+      movieId
+      watchlist {
+        id
+        name
+        description
+        userId
+        createdAt
+        updatedAt
+        __typename
+      }
+      movie {
+        id
+        tmdbId
+        title
+        releaseDate
+        rating
+        posterUrl
+        createdAt
+        updatedAt
+        __typename
+      }
+      createdAt
+      updatedAt
       __typename
     }
   }

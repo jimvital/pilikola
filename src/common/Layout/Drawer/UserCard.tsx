@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { generateClient } from "aws-amplify/api";
-import { Card, CardHeader, IconButton, Menu, MenuItem } from "@mui/material";
-import { MoreVert, Person } from "@mui/icons-material";
-import { useAuthenticator } from "@aws-amplify/ui-react";
 import {
   fetchUserAttributes,
   FetchUserAttributesOutput,
 } from "aws-amplify/auth";
+import { Card, CardHeader, IconButton, Menu, MenuItem } from "@mui/material";
+import { MoreVert, Person } from "@mui/icons-material";
+import { useAuthenticator } from "@aws-amplify/ui-react";
 
 import { createUser } from "@/graphql/mutations";
 import { getUser } from "@/graphql/queries";

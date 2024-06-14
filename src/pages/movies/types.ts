@@ -1,9 +1,11 @@
+import React from "react";
+
 export interface IMultiSelect {
-  selectedItems: unknown[];
-  setSelectedItems: (value: unknown[]) => void;
+  selectedItems: any[];
+  setSelectedItems: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
 export interface IWatched {
-  watchedMovies: unknown[];
-  setWatchedMovies: (value: unknown[]) => void;
+  watchedMovies: any[];
+  setWatchedMovies: React.Dispatch<React.SetStateAction<any[]>>;
 }
