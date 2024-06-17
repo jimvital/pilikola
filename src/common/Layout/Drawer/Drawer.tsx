@@ -1,26 +1,19 @@
 import React from "react";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  Avatar,
-  Box,
   Button,
-  Card,
-  CardHeader,
-  Divider,
-  IconButton,
-  InputAdornment,
-  Link,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
-import { Add, Home, Search, Theaters } from "@mui/icons-material";
+import { Add, Home, Theaters } from "@mui/icons-material";
+
 import UserCard from "./UserCard";
+import Watchlists from "./Watchlists";
 
 const Drawer: React.FC = () => {
   const router = useRouter();
@@ -56,31 +49,7 @@ const Drawer: React.FC = () => {
       >
         Create Watchlist
       </Button>
-      {isWatchlistPage ? null : (
-        <>
-          <Divider className="mx-0 my-[16px]" />
-          <Typography>My Lists</Typography>
-          <TextField
-            placeholder="Search"
-            size="small"
-            margin="normal"
-            InputProps={{
-              type: "search",
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search />
-                </InputAdornment>
-              ),
-            }}
-          />
-          <Box display="flex" gap="8px" alignItems="center">
-            <Avatar className="w-[24px] h-[24px] text-sm">W</Avatar>
-            <Link href="/watchlists/w1" underline="hover" variant="body2">
-              Watchlist 1
-            </Link>
-          </Box>
-        </>
-      )}
+      {isWatchlistPage ? null : <Watchlists />}
       <UserCard />
     </Stack>
   );
