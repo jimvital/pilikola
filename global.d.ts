@@ -40,6 +40,7 @@ type Watchlist = {
   id: string;
   name: string;
   description: string;
+  averageRating: number;
   movies: Movie[];
 };
 

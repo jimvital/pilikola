@@ -1,19 +1,50 @@
 import React from "react";
+import { generateClient } from "aws-amplify/api";
+import { useAuthenticator } from "@aws-amplify/ui-react";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { Link } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { Delete, Edit } from "@mui/icons-material";
 
+import { watchlistsByUserId } from "@/graphql/queries";
+
 const MyWatchlistsTable: React.FC = () => {
+  const {
+    user: { userId },
+  } = useAuthenticator((context) => [context.user]);
+
   const router = useRouter();
+
+  const fetchUserWatchlists = async () => {
+    const client = generateClient();
+
+    const {
+      data: {
+        watchlistsByUserId: { items: userWatchlists },
+      },
+    }: any = await client.graphql({
+      query: watchlistsByUserId,
+      variables: {
+        userId,
+      },
+    });
+
+    return userWatchlists;
+  };
+
+  const { data: watchlists, isLoading } = useQuery<Watchlist[]>({
+    queryKey: ["watchlists-by-user", userId],
+    queryFn: fetchUserWatchlists,
+    initialData: [],
+  });
 
   const columns: GridColDef[] = [
     {
       field: "name",
       headerName: "Name",
-      flex: 0.2,
+      flex: 0.25,
       type: "custom",
-      resizable: true,
       renderCell: ({ row }) => (
         <Link href={`/watchlists/${row.id}`}>{row.name}</Link>
       ),
@@ -21,9 +52,8 @@ const MyWatchlistsTable: React.FC = () => {
     {
       field: "description",
       headerName: "Description",
-      flex: 0.75,
+      flex: 0.7,
       sortable: false,
-      resizable: false,
     },
     {
       field: "actions",
@@ -48,20 +78,11 @@ const MyWatchlistsTable: React.FC = () => {
     },
   ];
 
-  const rows = [
-    {
-      id: "w1",
-      name: "Watchlist name",
-      description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.`,
-    },
-  ];
-
   return (
     <DataGrid
       autoHeight
       disableRowSelectionOnClick
-      checkboxSelection
-      rows={rows}
+      rows={watchlists}
       columns={columns}
       initialState={{
         pagination: {
@@ -69,7 +90,7 @@ const MyWatchlistsTable: React.FC = () => {
         },
       }}
       pageSizeOptions={[5, 10]}
-      onRowSelectionModelChange={() => {}}
+      loading={isLoading}
     />
   );
 };

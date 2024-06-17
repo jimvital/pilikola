@@ -9,7 +9,6 @@ const PopularWatchlistsTable: React.FC = () => {
       headerName: "Name",
       flex: 0.25,
       type: "custom",
-      resizable: true,
       renderCell: ({ row }) => (
         <Link href={`/watchlists/${row.id}`}>{row.name}</Link>
       ),
@@ -19,7 +18,6 @@ const PopularWatchlistsTable: React.FC = () => {
       headerName: "Description",
       flex: 0.75,
       sortable: false,
-      resizable: false,
     },
   ];
 

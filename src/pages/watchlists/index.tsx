@@ -18,7 +18,7 @@ const WatchlistsPage: React.FC = () => {
         Popular
       </Typography>
       <PopularWatchlistsTable />
-      <Divider className="mx-0 my-[16px]" />
+      <Divider className="mx-0 !my-[16px]" />
       <Typography variant="h5" gutterBottom>
         My lists
       </Typography>
