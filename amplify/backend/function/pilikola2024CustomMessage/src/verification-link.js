@@ -34,7 +34,7 @@ exports.handler = async (event) => {
     // eslint-disable-next-line spellcheck/spell-checker
     const bucketUrl = `http://${resourcePrefix}verificationbucket-${process.env.ENV}.s3-website${separator}${region}.amazonaws.com`;
     const url = `${bucketUrl}/?data=${payload}&code=${codeParameter}`;
-    const message = `${process.env.EMAILMESSAGE}. \n ${url}`;
+    const message = `${process.env.EMAILMESSAGE}. \n Your code: ${codeParameter}`;
     event.response.smsMessage = message;
     event.response.emailSubject = process.env.EMAILSUBJECT;
     event.response.emailMessage = message;
