@@ -3,7 +3,7 @@ import { generateClient } from "aws-amplify/api";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-import { Link } from "@mui/material";
+import Link from "next/link";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { Delete, Edit } from "@mui/icons-material";
 
@@ -46,7 +46,12 @@ const MyWatchlistsTable: React.FC = () => {
       flex: 0.25,
       type: "custom",
       renderCell: ({ row }) => (
-        <Link href={`/watchlists/${row.id}`}>{row.name}</Link>
+        <Link
+          className="text-[#90caf9] hover:underline"
+          href={`/watchlists/${row.id}`}
+        >
+          {row.name}
+        </Link>
       ),
     },
     {

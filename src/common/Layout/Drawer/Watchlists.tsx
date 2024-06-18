@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
+import Link from "next/link";
 import { generateClient } from "aws-amplify/api";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import {
@@ -6,7 +7,6 @@ import {
   Box,
   Divider,
   InputAdornment,
-  Link,
   TextField,
   Typography,
 } from "@mui/material";
@@ -85,9 +85,8 @@ const Watchlists: React.FC = () => {
             {watchlist.name[0]}
           </Avatar>
           <Link
+            className="text-[#90caf9] hover:underline"
             href={`/watchlists/${watchlist.id}`}
-            underline="hover"
-            variant="body2"
           >
             {watchlist.name}
           </Link>

@@ -1,11 +1,11 @@
 import React from "react";
+import Link from "next/link";
 import { isEmpty } from "lodash";
 import {
   Box,
   Card,
   CardContent,
   IconButton,
-  Link,
   Rating,
   Typography,
 } from "@mui/material";
@@ -104,7 +104,10 @@ const MovieCard: React.FC<MovieCardProps> = ({
         {renderAction()}
       </Box>
       <CardContent>
-        <Link variant="h6" href={`/movies/${data?.id}`}>
+        <Link
+          className="font-medium text-[#90caf9] hover:underline"
+          href={`/movies/${data?.id}`}
+        >
           {data?.title}
         </Link>
         <Typography variant="body2" color="text.secondary">

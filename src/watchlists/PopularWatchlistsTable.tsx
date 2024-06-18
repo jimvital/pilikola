@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "@mui/material";
+import Link from "next/link";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
 const PopularWatchlistsTable: React.FC = () => {
@@ -10,7 +10,12 @@ const PopularWatchlistsTable: React.FC = () => {
       flex: 0.25,
       type: "custom",
       renderCell: ({ row }) => (
-        <Link href={`/watchlists/${row.id}`}>{row.name}</Link>
+        <Link
+          className="text-[#90caf9] hover:underline"
+          href={`/watchlists/${row.id}`}
+        >
+          {row.name}
+        </Link>
       ),
     },
     {
