@@ -7,11 +7,12 @@ import {
   Box,
   Divider,
   InputAdornment,
+  Stack,
   TextField,
   Typography,
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
-import { Search } from "@mui/icons-material";
+import { List, Search } from "@mui/icons-material";
 import { debounce } from "@mui/material/utils";
 
 import { watchlistsByUserId } from "@/graphql/queries";
@@ -78,9 +79,32 @@ const Watchlists: React.FC = () => {
         onChange={(event) => {
           onSearchChange(event.target.value);
         }}
+        disabled={watchlists.length === 0}
       />
+      {watchlists.length === 0 ? (
+        <Stack
+          spacing={1}
+          className="h-[180px] justify-center items-center opacity-25"
+        >
+          <List fontSize="large" />
+          <Typography>Nothing to see here...</Typography>
+        </Stack>
+      ) : null}
+      {watchlists.length > 0 && filteredWatchlists.length === 0 ? (
+        <Stack spacing={1} className="h-[180px] justify-center items-center">
+          <Typography className="opacity-25" variant="h6">
+            No search results
+          </Typography>
+        </Stack>
+      ) : null}
       {filteredWatchlists.map((watchlist) => (
-        <Box key={watchlist.id} display="flex" gap="8px" alignItems="center">
+        <Box
+          key={watchlist.id}
+          display="flex"
+          gap="8px"
+          alignItems="center"
+          marginBottom="8px"
+        >
           <Avatar className="w-[24px] h-[24px] text-sm">
             {watchlist.name[0]}
           </Avatar>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { isEmpty } from "lodash";
 import {
@@ -17,6 +17,7 @@ import {
 } from "@mui/icons-material";
 
 import { IMultiSelect, IWatched } from "@/pages/movies/types";
+import AddToWatchlistModal from "./AddToWatchlistModal";
 
 interface MovieCardProps {
   data?: Movie;
@@ -35,13 +36,18 @@ const MovieCard: React.FC<MovieCardProps> = ({
   const isMultiSelect = !isEmpty(multiSelect);
   const isForWatched = !isEmpty(watched);
 
+  const [isAddToWatchlistOpen, setIsAddToWatchlistOpen] =
+    useState<boolean>(false);
+
   const renderAction = () => {
     if (isAddToWatchlist) {
       return (
         <IconButton
           color="primary"
           className="absolute right-0"
-          onClick={() => addToWatchlist({})}
+          onClick={() => {
+            setIsAddToWatchlistOpen(true);
+          }}
         >
           <BookmarkAddOutlined />
         </IconButton>
@@ -90,32 +96,41 @@ const MovieCard: React.FC<MovieCardProps> = ({
   };
 
   return (
-    <Card className="w-[165px]">
-      <Box
-        height="240px"
-        bgcolor="#2D2D2D"
-        sx={{
-          position: "relative",
-          backgroundImage: `url(${data?.posterUrl})`,
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-        }}
-      >
-        {renderAction()}
-      </Box>
-      <CardContent>
-        <Link
-          className="font-medium text-[#90caf9] hover:underline"
-          href={`/movies/${data?.id}`}
+    <>
+      {isAddToWatchlistOpen ? (
+        <AddToWatchlistModal
+          movie={data || ({} as Movie)}
+          open={isAddToWatchlistOpen}
+          onClose={() => setIsAddToWatchlistOpen(false)}
+        />
+      ) : null}
+      <Card className="w-[165px]">
+        <Box
+          height="240px"
+          bgcolor="#2D2D2D"
+          sx={{
+            position: "relative",
+            backgroundImage: `url(${data?.posterUrl})`,
+            backgroundSize: "cover",
+            backgroundRepeat: "no-repeat",
+          }}
         >
-          {data?.title}
-        </Link>
-        <Typography variant="body2" color="text.secondary">
-          {`(${data?.releaseDate || "N/A"})`}
-        </Typography>
-        <Rating value={data?.rating} precision={0.25} readOnly />
-      </CardContent>
-    </Card>
+          {renderAction()}
+        </Box>
+        <CardContent>
+          <Link
+            className="font-medium text-[#90caf9] hover:underline"
+            href={`/movies/${data?.id}`}
+          >
+            {data?.title}
+          </Link>
+          <Typography variant="body2" color="text.secondary">
+            {`(${data?.releaseDate || "N/A"})`}
+          </Typography>
+          <Rating value={data?.rating} precision={0.25} readOnly />
+        </CardContent>
+      </Card>
+    </>
   );
 };
 

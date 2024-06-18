@@ -206,7 +206,7 @@ const EditWatchlistPage: React.FC = () => {
         <IconButton color="primary" onClick={() => back()}>
           <ArrowBackIosNew />
         </IconButton>
-        <Typography variant="h4">{`Edit "${watchlistDetails?.name}"`}</Typography>
+        <Typography variant="h4">{`Editing "${watchlistDetails?.name}" watchlist`}</Typography>
       </Box>
       <TextField
         label="Name"

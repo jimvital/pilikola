@@ -12,7 +12,19 @@ export const onCreateUser = /* GraphQL */ `
           id
           name
           description
+          movies {
+            nextToken
+            __typename
+          }
           userId
+          user {
+            cognitoId
+            name
+            username
+            createdAt
+            updatedAt
+            __typename
+          }
           createdAt
           updatedAt
           __typename
@@ -25,6 +37,25 @@ export const onCreateUser = /* GraphQL */ `
           id
           userCognitoId
           movieId
+          user {
+            cognitoId
+            name
+            username
+            createdAt
+            updatedAt
+            __typename
+          }
+          movie {
+            id
+            tmdbId
+            title
+            releaseDate
+            rating
+            posterUrl
+            createdAt
+            updatedAt
+            __typename
+          }
           createdAt
           updatedAt
           __typename
@@ -49,7 +80,19 @@ export const onUpdateUser = /* GraphQL */ `
           id
           name
           description
+          movies {
+            nextToken
+            __typename
+          }
           userId
+          user {
+            cognitoId
+            name
+            username
+            createdAt
+            updatedAt
+            __typename
+          }
           createdAt
           updatedAt
           __typename
@@ -62,6 +105,25 @@ export const onUpdateUser = /* GraphQL */ `
           id
           userCognitoId
           movieId
+          user {
+            cognitoId
+            name
+            username
+            createdAt
+            updatedAt
+            __typename
+          }
+          movie {
+            id
+            tmdbId
+            title
+            releaseDate
+            rating
+            posterUrl
+            createdAt
+            updatedAt
+            __typename
+          }
           createdAt
           updatedAt
           __typename
@@ -86,7 +148,19 @@ export const onDeleteUser = /* GraphQL */ `
           id
           name
           description
+          movies {
+            nextToken
+            __typename
+          }
           userId
+          user {
+            cognitoId
+            name
+            username
+            createdAt
+            updatedAt
+            __typename
+          }
           createdAt
           updatedAt
           __typename
@@ -99,6 +173,25 @@ export const onDeleteUser = /* GraphQL */ `
           id
           userCognitoId
           movieId
+          user {
+            cognitoId
+            name
+            username
+            createdAt
+            updatedAt
+            __typename
+          }
+          movie {
+            id
+            tmdbId
+            title
+            releaseDate
+            rating
+            posterUrl
+            createdAt
+            updatedAt
+            __typename
+          }
           createdAt
           updatedAt
           __typename
@@ -125,6 +218,26 @@ export const onCreateWatchlist = /* GraphQL */ `
           id
           watchlistId
           movieId
+          watchlist {
+            id
+            name
+            description
+            userId
+            createdAt
+            updatedAt
+            __typename
+          }
+          movie {
+            id
+            tmdbId
+            title
+            releaseDate
+            rating
+            posterUrl
+            createdAt
+            updatedAt
+            __typename
+          }
           createdAt
           updatedAt
           __typename
@@ -138,10 +251,27 @@ export const onCreateWatchlist = /* GraphQL */ `
         name
         username
         watchlists {
+          items {
+            id
+            name
+            description
+            userId
+            createdAt
+            updatedAt
+            __typename
+          }
           nextToken
           __typename
         }
         allWatched {
+          items {
+            id
+            userCognitoId
+            movieId
+            createdAt
+            updatedAt
+            __typename
+          }
           nextToken
           __typename
         }
@@ -168,6 +298,26 @@ export const onUpdateWatchlist = /* GraphQL */ `
           id
           watchlistId
           movieId
+          watchlist {
+            id
+            name
+            description
+            userId
+            createdAt
+            updatedAt
+            __typename
+          }
+          movie {
+            id
+            tmdbId
+            title
+            releaseDate
+            rating
+            posterUrl
+            createdAt
+            updatedAt
+            __typename
+          }
           createdAt
           updatedAt
           __typename
@@ -181,10 +331,27 @@ export const onUpdateWatchlist = /* GraphQL */ `
         name
         username
         watchlists {
+          items {
+            id
+            name
+            description
+            userId
+            createdAt
+            updatedAt
+            __typename
+          }
           nextToken
           __typename
         }
         allWatched {
+          items {
+            id
+            userCognitoId
+            movieId
+            createdAt
+            updatedAt
+            __typename
+          }
           nextToken
           __typename
         }
@@ -211,6 +378,26 @@ export const onDeleteWatchlist = /* GraphQL */ `
           id
           watchlistId
           movieId
+          watchlist {
+            id
+            name
+            description
+            userId
+            createdAt
+            updatedAt
+            __typename
+          }
+          movie {
+            id
+            tmdbId
+            title
+            releaseDate
+            rating
+            posterUrl
+            createdAt
+            updatedAt
+            __typename
+          }
           createdAt
           updatedAt
           __typename
@@ -224,10 +411,27 @@ export const onDeleteWatchlist = /* GraphQL */ `
         name
         username
         watchlists {
+          items {
+            id
+            name
+            description
+            userId
+            createdAt
+            updatedAt
+            __typename
+          }
           nextToken
           __typename
         }
         allWatched {
+          items {
+            id
+            userCognitoId
+            movieId
+            createdAt
+            updatedAt
+            __typename
+          }
           nextToken
           __typename
         }
@@ -255,6 +459,25 @@ export const onCreateMovie = /* GraphQL */ `
           id
           userCognitoId
           movieId
+          user {
+            cognitoId
+            name
+            username
+            createdAt
+            updatedAt
+            __typename
+          }
+          movie {
+            id
+            tmdbId
+            title
+            releaseDate
+            rating
+            posterUrl
+            createdAt
+            updatedAt
+            __typename
+          }
           createdAt
           updatedAt
           __typename
@@ -267,6 +490,26 @@ export const onCreateMovie = /* GraphQL */ `
           id
           watchlistId
           movieId
+          watchlist {
+            id
+            name
+            description
+            userId
+            createdAt
+            updatedAt
+            __typename
+          }
+          movie {
+            id
+            tmdbId
+            title
+            releaseDate
+            rating
+            posterUrl
+            createdAt
+            updatedAt
+            __typename
+          }
           createdAt
           updatedAt
           __typename
@@ -294,6 +537,25 @@ export const onUpdateMovie = /* GraphQL */ `
           id
           userCognitoId
           movieId
+          user {
+            cognitoId
+            name
+            username
+            createdAt
+            updatedAt
+            __typename
+          }
+          movie {
+            id
+            tmdbId
+            title
+            releaseDate
+            rating
+            posterUrl
+            createdAt
+            updatedAt
+            __typename
+          }
           createdAt
           updatedAt
           __typename
@@ -306,6 +568,26 @@ export const onUpdateMovie = /* GraphQL */ `
           id
           watchlistId
           movieId
+          watchlist {
+            id
+            name
+            description
+            userId
+            createdAt
+            updatedAt
+            __typename
+          }
+          movie {
+            id
+            tmdbId
+            title
+            releaseDate
+            rating
+            posterUrl
+            createdAt
+            updatedAt
+            __typename
+          }
           createdAt
           updatedAt
           __typename
@@ -333,6 +615,25 @@ export const onDeleteMovie = /* GraphQL */ `
           id
           userCognitoId
           movieId
+          user {
+            cognitoId
+            name
+            username
+            createdAt
+            updatedAt
+            __typename
+          }
+          movie {
+            id
+            tmdbId
+            title
+            releaseDate
+            rating
+            posterUrl
+            createdAt
+            updatedAt
+            __typename
+          }
           createdAt
           updatedAt
           __typename
@@ -345,6 +646,26 @@ export const onDeleteMovie = /* GraphQL */ `
           id
           watchlistId
           movieId
+          watchlist {
+            id
+            name
+            description
+            userId
+            createdAt
+            updatedAt
+            __typename
+          }
+          movie {
+            id
+            tmdbId
+            title
+            releaseDate
+            rating
+            posterUrl
+            createdAt
+            updatedAt
+            __typename
+          }
           createdAt
           updatedAt
           __typename
@@ -371,10 +692,27 @@ export const onCreateUserMovies = /* GraphQL */ `
         name
         username
         watchlists {
+          items {
+            id
+            name
+            description
+            userId
+            createdAt
+            updatedAt
+            __typename
+          }
           nextToken
           __typename
         }
         allWatched {
+          items {
+            id
+            userCognitoId
+            movieId
+            createdAt
+            updatedAt
+            __typename
+          }
           nextToken
           __typename
         }
@@ -390,10 +728,26 @@ export const onCreateUserMovies = /* GraphQL */ `
         rating
         posterUrl
         watchedBy {
+          items {
+            id
+            userCognitoId
+            movieId
+            createdAt
+            updatedAt
+            __typename
+          }
           nextToken
           __typename
         }
         listedIn {
+          items {
+            id
+            watchlistId
+            movieId
+            createdAt
+            updatedAt
+            __typename
+          }
           nextToken
           __typename
         }
@@ -420,10 +774,27 @@ export const onUpdateUserMovies = /* GraphQL */ `
         name
         username
         watchlists {
+          items {
+            id
+            name
+            description
+            userId
+            createdAt
+            updatedAt
+            __typename
+          }
           nextToken
           __typename
         }
         allWatched {
+          items {
+            id
+            userCognitoId
+            movieId
+            createdAt
+            updatedAt
+            __typename
+          }
           nextToken
           __typename
         }
@@ -439,10 +810,26 @@ export const onUpdateUserMovies = /* GraphQL */ `
         rating
         posterUrl
         watchedBy {
+          items {
+            id
+            userCognitoId
+            movieId
+            createdAt
+            updatedAt
+            __typename
+          }
           nextToken
           __typename
         }
         listedIn {
+          items {
+            id
+            watchlistId
+            movieId
+            createdAt
+            updatedAt
+            __typename
+          }
           nextToken
           __typename
         }
@@ -469,10 +856,27 @@ export const onDeleteUserMovies = /* GraphQL */ `
         name
         username
         watchlists {
+          items {
+            id
+            name
+            description
+            userId
+            createdAt
+            updatedAt
+            __typename
+          }
           nextToken
           __typename
         }
         allWatched {
+          items {
+            id
+            userCognitoId
+            movieId
+            createdAt
+            updatedAt
+            __typename
+          }
           nextToken
           __typename
         }
@@ -488,10 +892,26 @@ export const onDeleteUserMovies = /* GraphQL */ `
         rating
         posterUrl
         watchedBy {
+          items {
+            id
+            userCognitoId
+            movieId
+            createdAt
+            updatedAt
+            __typename
+          }
           nextToken
           __typename
         }
         listedIn {
+          items {
+            id
+            watchlistId
+            movieId
+            createdAt
+            updatedAt
+            __typename
+          }
           nextToken
           __typename
         }
@@ -518,6 +938,14 @@ export const onCreateWatchlistMovies = /* GraphQL */ `
         name
         description
         movies {
+          items {
+            id
+            watchlistId
+            movieId
+            createdAt
+            updatedAt
+            __typename
+          }
           nextToken
           __typename
         }
@@ -526,6 +954,14 @@ export const onCreateWatchlistMovies = /* GraphQL */ `
           cognitoId
           name
           username
+          watchlists {
+            nextToken
+            __typename
+          }
+          allWatched {
+            nextToken
+            __typename
+          }
           createdAt
           updatedAt
           __typename
@@ -542,10 +978,26 @@ export const onCreateWatchlistMovies = /* GraphQL */ `
         rating
         posterUrl
         watchedBy {
+          items {
+            id
+            userCognitoId
+            movieId
+            createdAt
+            updatedAt
+            __typename
+          }
           nextToken
           __typename
         }
         listedIn {
+          items {
+            id
+            watchlistId
+            movieId
+            createdAt
+            updatedAt
+            __typename
+          }
           nextToken
           __typename
         }
@@ -572,6 +1024,14 @@ export const onUpdateWatchlistMovies = /* GraphQL */ `
         name
         description
         movies {
+          items {
+            id
+            watchlistId
+            movieId
+            createdAt
+            updatedAt
+            __typename
+          }
           nextToken
           __typename
         }
@@ -580,6 +1040,14 @@ export const onUpdateWatchlistMovies = /* GraphQL */ `
           cognitoId
           name
           username
+          watchlists {
+            nextToken
+            __typename
+          }
+          allWatched {
+            nextToken
+            __typename
+          }
           createdAt
           updatedAt
           __typename
@@ -596,10 +1064,26 @@ export const onUpdateWatchlistMovies = /* GraphQL */ `
         rating
         posterUrl
         watchedBy {
+          items {
+            id
+            userCognitoId
+            movieId
+            createdAt
+            updatedAt
+            __typename
+          }
           nextToken
           __typename
         }
         listedIn {
+          items {
+            id
+            watchlistId
+            movieId
+            createdAt
+            updatedAt
+            __typename
+          }
           nextToken
           __typename
         }
@@ -626,6 +1110,14 @@ export const onDeleteWatchlistMovies = /* GraphQL */ `
         name
         description
         movies {
+          items {
+            id
+            watchlistId
+            movieId
+            createdAt
+            updatedAt
+            __typename
+          }
           nextToken
           __typename
         }
@@ -634,6 +1126,14 @@ export const onDeleteWatchlistMovies = /* GraphQL */ `
           cognitoId
           name
           username
+          watchlists {
+            nextToken
+            __typename
+          }
+          allWatched {
+            nextToken
+            __typename
+          }
           createdAt
           updatedAt
           __typename
@@ -650,10 +1150,26 @@ export const onDeleteWatchlistMovies = /* GraphQL */ `
         rating
         posterUrl
         watchedBy {
+          items {
+            id
+            userCognitoId
+            movieId
+            createdAt
+            updatedAt
+            __typename
+          }
           nextToken
           __typename
         }
         listedIn {
+          items {
+            id
+            watchlistId
+            movieId
+            createdAt
+            updatedAt
+            __typename
+          }
           nextToken
           __typename
         }
