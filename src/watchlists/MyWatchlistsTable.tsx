@@ -72,13 +72,6 @@ const MyWatchlistsTable: React.FC = () => {
           onClick={() => router.push(`/watchlists/edit/${id}`)}
           showInMenu
         />,
-        <GridActionsCellItem
-          key="delete"
-          icon={<Delete />}
-          label="Delete"
-          onClick={() => {}}
-          showInMenu
-        />,
       ],
     },
   ];

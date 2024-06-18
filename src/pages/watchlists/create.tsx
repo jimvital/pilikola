@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useRouter } from "next/router";
 import { generateClient } from "aws-amplify/api";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { Box, Button, TextField, Typography } from "@mui/material";
@@ -16,6 +17,8 @@ const CreateWatchlistPage: React.FC = () => {
   const {
     user: { userId },
   } = useAuthenticator((context) => [context.user]);
+
+  const { push } = useRouter();
 
   const [appliedMovies, setAppliedMovies] = useState<Movie[]>([]);
   const [watchlistName, setWatchlistName] = useState<string>("");
@@ -49,44 +52,48 @@ const CreateWatchlistPage: React.FC = () => {
         query: listMovies,
       });
 
-      appliedMovies.forEach(async (movie) => {
-        const currentMovie = allMovies.find(
-          (temp: any) => temp.tmdbId === movie.id
-        );
+      await Promise.all(
+        appliedMovies.map(async (movie) => {
+          const currentMovie = allMovies.find(
+            (temp: any) => temp.tmdbId === movie.id
+          );
 
-        let movieId = "";
+          let movieId = "";
 
-        if (!currentMovie) {
-          const {
-            data: { createMovie: createdMovie },
-          }: any = await client.graphql({
-            query: createMovie,
+          if (!currentMovie) {
+            const {
+              data: { createMovie: createdMovie },
+            }: any = await client.graphql({
+              query: createMovie,
+              variables: {
+                input: {
+                  tmdbId: movie.id,
+                  title: movie.title,
+                  releaseDate: movie.releaseDate,
+                  rating: movie.rating,
+                  posterUrl: movie.posterUrl,
+                },
+              },
+            });
+
+            movieId = createdMovie.id;
+          } else {
+            movieId = currentMovie.id;
+          }
+
+          await client.graphql({
+            query: createWatchlistMovies,
             variables: {
               input: {
-                tmdbId: movie.id,
-                title: movie.title,
-                releaseDate: movie.releaseDate,
-                rating: movie.rating,
-                posterUrl: movie.posterUrl,
+                watchlistId: createdWatchlist.id,
+                movieId,
               },
             },
           });
+        })
+      );
 
-          movieId = createdMovie.id;
-        } else {
-          movieId = currentMovie.id;
-        }
-
-        await client.graphql({
-          query: createWatchlistMovies,
-          variables: {
-            input: {
-              watchlistId: createdWatchlist.id,
-              movieId,
-            },
-          },
-        });
-      });
+      push(`/watchlists/${createdWatchlist.id}`);
     } catch (error) {
       console.error(error);
     } finally {

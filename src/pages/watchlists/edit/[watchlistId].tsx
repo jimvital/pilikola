@@ -110,51 +110,53 @@ const EditWatchlistPage: React.FC = () => {
 
       const prevWatchlistMovies = watchlistDetails?.movies || [];
 
-      appliedMovies.forEach(async (movie) => {
-        // Do not create new watchlist - movie connection if already existing
-        const isExisting = !!prevWatchlistMovies.find(
-          (prev) => prev.id === movie.id
-        );
+      await Promise.all(
+        appliedMovies.map(async (movie) => {
+          // Do not create new watchlist - movie connection if already existing
+          const isExisting =
+            prevWatchlistMovies.find((prev) => prev.id === movie.id) !==
+            undefined;
 
-        if (isExisting) return;
+          if (isExisting) return;
 
-        const currentMovie = allWatchlistMovies.find(
-          (temp: any) => temp.movie.tmdbId === movie.id
-        );
+          const currentMovie = allWatchlistMovies.find(
+            (temp: any) => temp.movie.tmdbId === movie.id
+          );
 
-        let movieId = "";
+          let movieId = "";
 
-        if (!currentMovie) {
-          const {
-            data: { createMovie: createdMovie },
-          }: any = await client.graphql({
-            query: createMovie,
+          if (!currentMovie) {
+            const {
+              data: { createMovie: createdMovie },
+            }: any = await client.graphql({
+              query: createMovie,
+              variables: {
+                input: {
+                  tmdbId: movie.id,
+                  title: movie.title,
+                  releaseDate: movie.releaseDate,
+                  rating: movie.rating,
+                  posterUrl: movie.posterUrl,
+                },
+              },
+            });
+
+            movieId = createdMovie.id;
+          } else {
+            movieId = currentMovie.id;
+          }
+
+          await client.graphql({
+            query: createWatchlistMovies,
             variables: {
               input: {
-                tmdbId: movie.id,
-                title: movie.title,
-                releaseDate: movie.releaseDate,
-                rating: movie.rating,
-                posterUrl: movie.posterUrl,
+                watchlistId,
+                movieId,
               },
             },
           });
-
-          movieId = createdMovie.id;
-        } else {
-          movieId = currentMovie.id;
-        }
-
-        await client.graphql({
-          query: createWatchlistMovies,
-          variables: {
-            input: {
-              watchlistId,
-              movieId,
-            },
-          },
-        });
-      });
+        })
+      );
 
       // Delete watchlist - movie connection based on edited selections
       const watchlistMoviesToDelete = prevWatchlistMovies.filter((movie) => {
@@ -165,21 +167,23 @@ const EditWatchlistPage: React.FC = () => {
         return !isExisting;
       });
 
-      watchlistMoviesToDelete.forEach(async (movie) => {
-        const movieToDelete = allWatchlistMovies.find(
-          (temp: any) =>
-            temp.movie.tmdbId === movie.id && temp.watchlistId === watchlistId
-        );
+      await Promise.all(
+        watchlistMoviesToDelete.map(async (movie) => {
+          const movieToDelete = allWatchlistMovies.find(
+            (temp: any) =>
+              temp.movie.tmdbId === movie.id && temp.watchlistId === watchlistId
+          );
 
-        await client.graphql({
-          query: deleteWatchlistMovies,
-          variables: {
-            input: {
-              id: movieToDelete.id,
+          await client.graphql({
+            query: deleteWatchlistMovies,
+            variables: {
+              input: {
+                id: movieToDelete.id,
+              },
             },
-          },
-        });
-      });
+          });
+        })
+      );
 
       push(`/watchlists/${watchlistId}`);
     } catch (error) {

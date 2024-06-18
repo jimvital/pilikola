@@ -6,7 +6,12 @@ import { Box, Button, Card, CardContent, Typography } from "@mui/material";
 
 import { PageLoader } from "@/common";
 import { MovieList } from "@/movies";
-import { getWatchlist, watchlistMoviesByWatchlistId } from "@/graphql/queries";
+import {
+  getWatchlist,
+  listWatchlistMovies,
+  watchlistMoviesByWatchlistId,
+} from "@/graphql/queries";
+import { deleteWatchlist, deleteWatchlistMovies } from "@/graphql/mutations";
 
 const WatchlistDetailsPage: React.FC = () => {
   const {
@@ -15,6 +20,7 @@ const WatchlistDetailsPage: React.FC = () => {
   } = useRouter();
 
   const [watchedMovies, setWatchedMovies] = useState<unknown[]>([]);
+  const [isDeleteInProgress, setIsDeleteInProgress] = useState<boolean>(false);
 
   const fetchWatchlistDetails = async () => {
     if (!watchlistId) return {};
@@ -68,6 +74,60 @@ const WatchlistDetailsPage: React.FC = () => {
     return `${watchlistDetails.averageRating.toFixed(1)} / 5`;
   };
 
+  const handleDelete = async () => {
+    setIsDeleteInProgress(true);
+
+    try {
+      const client = generateClient();
+
+      // Retrieve watchlist - movie connections
+      const {
+        data: {
+          listWatchlistMovies: { items: allWatchlistMovies },
+        },
+      }: any = await client.graphql({
+        query: listWatchlistMovies,
+      });
+
+      const watchlistMovies = watchlistDetails?.movies || [];
+
+      // Delete watchlist - movie connections
+      await Promise.all(
+        watchlistMovies.map(async (movie) => {
+          const movieToDelete = allWatchlistMovies.find(
+            (temp: any) =>
+              temp.movie.tmdbId === movie.id && temp.watchlistId === watchlistId
+          );
+
+          await client.graphql({
+            query: deleteWatchlistMovies,
+            variables: {
+              input: {
+                id: movieToDelete.id,
+              },
+            },
+          });
+        })
+      );
+
+      // Delete the rest of the watchlist
+      await client.graphql({
+        query: deleteWatchlist,
+        variables: {
+          input: {
+            id: watchlistId,
+          },
+        },
+      });
+
+      push(`/`);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsDeleteInProgress(false);
+    }
+  };
+
   return (
     <Box
       maxHeight="100vh"
@@ -76,7 +136,7 @@ const WatchlistDetailsPage: React.FC = () => {
       flexDirection="column"
       className="overflow-y-auto"
     >
-      {isLoading ? <PageLoader /> : null}
+      {isLoading || isDeleteInProgress ? <PageLoader /> : null}
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <Typography variant="h4" gutterBottom>
           {watchlistDetails?.name}
@@ -89,7 +149,7 @@ const WatchlistDetailsPage: React.FC = () => {
           >
             Edit
           </Button>
-          <Button variant="outlined" color="error">
+          <Button variant="outlined" color="error" onClick={handleDelete}>
             Delete
           </Button>
         </Box>
