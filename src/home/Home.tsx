@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Box, Card, CardContent, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 
@@ -6,8 +6,6 @@ import { PageLoader } from "@/common";
 import { MovieList } from "@/movies";
 
 const Home: React.FC = () => {
-  const [, addToWatchlist] = useState<object>({});
-
   const fetchTrendingMovies = async () => {
     const response = await fetch("/api/movies/trending", {
       method: "GET",
@@ -37,7 +35,7 @@ const Home: React.FC = () => {
         className="flex-wrap overflow-y-auto"
         hasSearch
         showTrending
-        addToWatchlist={addToWatchlist}
+        isAddToWatchlist
       />
     </Box>
   );

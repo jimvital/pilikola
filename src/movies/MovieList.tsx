@@ -23,7 +23,7 @@ interface MovieListProps {
   title?: string;
   hasSearch?: boolean;
   showTrending?: boolean;
-  addToWatchlist?: (movie: object) => void;
+  isAddToWatchlist?: boolean;
   multiSelect?: IMultiSelect;
   watched?: IWatched;
 }
@@ -35,7 +35,7 @@ const MovieList: React.FC<MovieListProps> = ({
   title,
   hasSearch = false,
   showTrending = false,
-  addToWatchlist,
+  isAddToWatchlist,
   multiSelect,
   watched,
 }) => {
@@ -142,7 +142,7 @@ const MovieList: React.FC<MovieListProps> = ({
           <MovieCard
             key={movie.id}
             data={movie}
-            addToWatchlist={addToWatchlist}
+            isAddToWatchlist={isAddToWatchlist}
             multiSelect={multiSelect}
             watched={watched}
           />

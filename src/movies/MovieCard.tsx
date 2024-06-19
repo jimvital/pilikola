@@ -22,18 +22,17 @@ import AddToWatchlistModal from "./AddToWatchlistModal";
 
 interface MovieCardProps {
   data?: Movie;
-  addToWatchlist?: (movie: object) => void;
+  isAddToWatchlist?: boolean;
   multiSelect?: IMultiSelect;
   watched?: IWatched;
 }
 
 const MovieCard: React.FC<MovieCardProps> = ({
   data = {} as Movie,
-  addToWatchlist,
+  isAddToWatchlist,
   multiSelect,
   watched,
 }) => {
-  const isAddToWatchlist = addToWatchlist !== undefined;
   const isMultiSelect = !isEmpty(multiSelect);
   const isForWatched = !isEmpty(watched);
 
