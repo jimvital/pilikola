@@ -160,7 +160,7 @@ const WatchlistDetailsPage: React.FC = () => {
         },
       });
 
-      push(`/`);
+      push(`/watchlists`);
     } catch (error) {
       console.error(error);
     } finally {

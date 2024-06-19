@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import { generateClient } from "aws-amplify/api";
 import {
   fetchUserAttributes,
@@ -16,6 +17,8 @@ const UserCard: React.FC = () => {
     user: { userId },
     signOut,
   } = useAuthenticator((context) => [context.user]);
+
+  const { push } = useRouter();
 
   const [userDetails, setUserDetails] = useState<FetchUserAttributesOutput>({});
 
@@ -59,6 +62,7 @@ const UserCard: React.FC = () => {
   }, [userId]);
 
   const handleSignOut = () => {
+    push(`/`);
     handleClose();
     signOut();
   };

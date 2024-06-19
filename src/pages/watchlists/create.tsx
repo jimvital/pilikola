@@ -93,7 +93,7 @@ const CreateWatchlistPage: React.FC = () => {
         })
       );
 
-      push(`/watchlists/${createdWatchlist.id}`);
+      push(`/watchlists`);
     } catch (error) {
       console.error(error);
     } finally {
