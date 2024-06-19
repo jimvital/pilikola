@@ -24,7 +24,7 @@ type MovieDetails = {
   rating: number;
   cast: MovieCast[];
   recommendations: MovieRecommendation[];
-  isWatched?: boolean;
+  listedInCount?: number;
 };
 
 type Movie = {
@@ -34,7 +34,6 @@ type Movie = {
   posterUrl: string;
   releaseDate: string;
   rating: number;
-  isWatched?: boolean;
 };
 
 type Watchlist = {

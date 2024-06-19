@@ -1,10 +1,12 @@
 import React from "react";
 import { useRouter } from "next/router";
+import { generateClient } from "aws-amplify/api";
 import { Box } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 
 import { PageLoader } from "@/common";
 import { MovieCast, MovieList, MovieSummary } from "@/movies";
+import { listMovies } from "@/graphql/queries";
 
 const MovieDetailsPage: React.FC = () => {
   const {
@@ -14,15 +16,31 @@ const MovieDetailsPage: React.FC = () => {
   const fetchMovieDetails = async () => {
     if (!movieId) return {};
 
+    const client = generateClient();
+
+    const {
+      data: {
+        listMovies: { items: filteredMovies },
+      },
+    }: any = await client.graphql({
+      query: listMovies,
+      variables: {
+        filter: { tmdbId: { eq: movieId } },
+      },
+    });
+
+    const listedIn =
+      filteredMovies.length > 0 ? filteredMovies[0].listedIn.items : [];
+
     const response = await fetch(`/api/movies/${movieId}`, {
       method: "GET",
     });
     const data = await response.json();
 
-    return data;
+    return { ...data, listedInCount: listedIn.length };
   };
 
-  const { data: movieDetails, isLoading } = useQuery<MovieDetails>({
+  const { data: movieDetails, isFetching } = useQuery<MovieDetails>({
     queryKey: ["movies", movieId],
     queryFn: fetchMovieDetails,
   });
@@ -36,7 +54,7 @@ const MovieDetailsPage: React.FC = () => {
       gap="8px"
       className="overflow-y-auto"
     >
-      {isLoading ? <PageLoader /> : null}
+      {isFetching ? <PageLoader /> : null}
       <MovieSummary movieDetails={movieDetails || ({} as MovieDetails)} />
       <MovieCast movieCast={movieDetails?.cast || []} />
       <MovieList title="Recommended" movies={movieDetails?.recommendations} />

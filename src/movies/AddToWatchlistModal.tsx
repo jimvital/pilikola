@@ -98,7 +98,7 @@ const AddToWatchlistModal: React.FC<AddToWatchlistModalProps> = ({
     return userWatchlists;
   };
 
-  const { data: watchlists, isLoading } = useQuery<Watchlist[]>({
+  const { data: watchlists, isFetching } = useQuery<Watchlist[]>({
     queryKey: ["watchlists-by-user-movie", userId, movie.id],
     queryFn: fetchUserWatchlists,
     initialData: [],
@@ -177,7 +177,7 @@ const AddToWatchlistModal: React.FC<AddToWatchlistModalProps> = ({
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      {isLoading || isAddInProgress ? <PageLoader /> : null}
+      {isFetching || isAddInProgress ? <PageLoader /> : null}
       <DialogTitle>{`Adding "${movie.title}"`}</DialogTitle>
       <IconButton onClick={onClose} className="!absolute top-[8px] right-[8px]">
         <Close />

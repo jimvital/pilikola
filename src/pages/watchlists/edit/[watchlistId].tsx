@@ -75,7 +75,7 @@ const EditWatchlistPage: React.FC = () => {
     return { ...watchlistDetails, movies: normalizedMovies };
   };
 
-  const { data: watchlistDetails, isLoading } = useQuery<Watchlist>({
+  const { data: watchlistDetails, isFetching } = useQuery<Watchlist>({
     queryKey: ["watchlists", watchlistId],
     queryFn: fetchWatchlistDetails,
   });
@@ -201,7 +201,7 @@ const EditWatchlistPage: React.FC = () => {
       flexDirection="column"
       className="overflow-y-auto"
     >
-      {isLoading || isEditInProgress ? <PageLoader /> : null}
+      {isFetching || isEditInProgress ? <PageLoader /> : null}
       <Box display="flex" gap="16px">
         <IconButton color="primary" onClick={() => back()}>
           <ArrowBackIosNew />

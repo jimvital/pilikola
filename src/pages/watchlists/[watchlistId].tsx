@@ -101,7 +101,7 @@ const WatchlistDetailsPage: React.FC = () => {
 
   const {
     data: watchlistDetails,
-    isLoading,
+    isFetching,
     refetch,
   } = useQuery<Watchlist>({
     queryKey: ["watchlists", watchlistId],
@@ -222,7 +222,7 @@ const WatchlistDetailsPage: React.FC = () => {
       flexDirection="column"
       className="overflow-y-auto"
     >
-      {isLoading || isDeleteInProgress || isWatchedInProgress ? (
+      {isFetching || isDeleteInProgress || isWatchedInProgress ? (
         <PageLoader />
       ) : null}
       <Box display="flex" alignItems="center" justifyContent="space-between">
