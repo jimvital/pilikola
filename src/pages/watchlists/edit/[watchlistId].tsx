@@ -10,6 +10,7 @@ import { PageLoader } from "@/common";
 import { ManageWatchlistMovies } from "@/watchlist";
 import {
   getWatchlist,
+  listMovies,
   listWatchlistMovies,
   watchlistMoviesByWatchlistId,
 } from "@/graphql/queries";
@@ -99,13 +100,13 @@ const EditWatchlistPage: React.FC = () => {
         },
       });
 
-      // Retrieve watchlist - movie connections
+      // Create watchlist - movie connections, if applicable
       const {
         data: {
-          listWatchlistMovies: { items: allWatchlistMovies },
+          listMovies: { items: allMovies },
         },
       }: any = await client.graphql({
-        query: listWatchlistMovies,
+        query: listMovies,
       });
 
       const prevWatchlistMovies = watchlistDetails?.movies || [];
@@ -119,8 +120,8 @@ const EditWatchlistPage: React.FC = () => {
 
           if (isExisting) return;
 
-          const currentMovie = allWatchlistMovies.find(
-            (temp: any) => temp.movie.tmdbId === movie.id
+          const currentMovie = allMovies.find(
+            (temp: any) => temp.tmdbId === movie.id
           );
 
           let movieId = "";
@@ -159,6 +160,14 @@ const EditWatchlistPage: React.FC = () => {
       );
 
       // Delete watchlist - movie connection based on edited selections
+      const {
+        data: {
+          listWatchlistMovies: { items: allWatchlistMovies },
+        },
+      }: any = await client.graphql({
+        query: listWatchlistMovies,
+      });
+
       const watchlistMoviesToDelete = prevWatchlistMovies.filter((movie) => {
         const isExisting = appliedMovies.find(
           (applied) => applied.id === movie.id
