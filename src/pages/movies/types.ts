@@ -6,6 +6,6 @@ export interface IMultiSelect {
 }
 
 export interface IWatched {
-  watchedMovies: any[];
-  setWatchedMovies: React.Dispatch<React.SetStateAction<any[]>>;
+  watchedMovies: string[];
+  handleWatched: (movie: Movie) => void;
 }

@@ -29,6 +29,7 @@ type MovieDetails = {
 
 type Movie = {
   id: string;
+  dbId?: string;
   title: string;
   posterUrl: string;
   releaseDate: string;

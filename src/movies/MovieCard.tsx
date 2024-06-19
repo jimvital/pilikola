@@ -10,10 +10,11 @@ import {
   Typography,
 } from "@mui/material";
 import {
-  BookmarkAddOutlined,
+  Bookmarks,
   CheckBox,
   CheckBoxOutlineBlank,
-  VisibilityOff,
+  Visibility,
+  VisibilityOffOutlined,
 } from "@mui/icons-material";
 
 import { IMultiSelect, IWatched } from "@/pages/movies/types";
@@ -27,7 +28,7 @@ interface MovieCardProps {
 }
 
 const MovieCard: React.FC<MovieCardProps> = ({
-  data,
+  data = {} as Movie,
   addToWatchlist,
   multiSelect,
   watched,
@@ -44,12 +45,12 @@ const MovieCard: React.FC<MovieCardProps> = ({
       return (
         <IconButton
           color="primary"
-          className="absolute right-0"
+          className="!absolute top-1 right-1 !bg-black/80"
           onClick={() => {
             setIsAddToWatchlistOpen(true);
           }}
         >
-          <BookmarkAddOutlined />
+          <Bookmarks />
         </IconButton>
       );
     }
@@ -62,7 +63,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
       return (
         <IconButton
           color="secondary"
-          className="absolute right-0"
+          className="!absolute top-1 left-1 !bg-black/80"
           onClick={() => {
             setSelectedItems((prev) => {
               if (isSelected) {
@@ -79,15 +80,17 @@ const MovieCard: React.FC<MovieCardProps> = ({
     }
 
     if (isForWatched) {
-      const { setWatchedMovies } = watched;
+      const { watchedMovies, handleWatched } = watched;
+
+      const isWatched = watchedMovies.includes(data.id);
 
       return (
         <IconButton
           color="secondary"
-          className="absolute right-0"
-          onClick={() => setWatchedMovies([])}
+          className="!absolute top-1 right-1 !bg-black/80"
+          onClick={() => handleWatched(data)}
         >
-          <VisibilityOff />
+          {isWatched ? <Visibility /> : <VisibilityOffOutlined />}
         </IconButton>
       );
     }
