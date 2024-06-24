@@ -1,25 +1,12 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
-import { generateClient } from "aws-amplify/api";
 import { useAuthenticator } from "@aws-amplify/ui-react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Box, Button, IconButton, TextField, Typography } from "@mui/material";
 import { ArrowBackIosNew } from "@mui/icons-material";
 
 import { PageLoader } from "@/common";
 import { ManageWatchlistMovies } from "@/watchlist";
-import {
-  getWatchlist,
-  listMovies,
-  listWatchlistMovies,
-  watchlistMoviesByWatchlistId,
-} from "@/graphql/queries";
-import {
-  createMovie,
-  createWatchlistMovies,
-  deleteWatchlistMovies,
-  updateWatchlist,
-} from "@/graphql/mutations";
 
 const EditWatchlistPage: React.FC = () => {
   const {
@@ -35,45 +22,21 @@ const EditWatchlistPage: React.FC = () => {
   const [appliedMovies, setAppliedMovies] = useState<Movie[]>([]);
   const [watchlistName, setWatchlistName] = useState<string>("");
   const [watchlistDescription, setWatchlistDescription] = useState<string>("");
-  const [isEditInProgress, setIsEditInProgress] = useState<boolean>(false);
 
   const fetchWatchlistDetails = async () => {
     if (!watchlistId) return {};
 
-    const client = generateClient();
-
-    const {
-      data: { getWatchlist: watchlistDetails },
-    }: any = await client.graphql({
-      query: getWatchlist,
-      variables: {
-        id: watchlistId,
-      },
-    });
-    const {
-      data: {
-        watchlistMoviesByWatchlistId: { items: watchlistMovies },
-      },
-    }: any = await client.graphql({
-      query: watchlistMoviesByWatchlistId,
-      variables: {
-        watchlistId,
-      },
+    const response = await fetch(`/api/watchlist/${watchlistId}`, {
+      method: "GET",
     });
 
-    const normalizedMovies = watchlistMovies.map(({ movie }: any) => ({
-      id: movie.tmdbId,
-      title: movie.title,
-      posterUrl: movie.posterUrl,
-      releaseDate: movie.releaseDate,
-      rating: movie.rating,
-    }));
+    const watchlistDetails = await response.json();
 
     setWatchlistName(watchlistDetails?.name);
     setWatchlistDescription(watchlistDetails?.description);
-    setAppliedMovies(normalizedMovies);
+    setAppliedMovies(watchlistDetails?.movies);
 
-    return { ...watchlistDetails, movies: normalizedMovies };
+    return watchlistDetails;
   };
 
   const { data: watchlistDetails, isFetching } = useQuery<Watchlist>({
@@ -81,126 +44,30 @@ const EditWatchlistPage: React.FC = () => {
     queryFn: fetchWatchlistDetails,
   });
 
-  const handleEdit = async () => {
-    setIsEditInProgress(true);
+  const patchWatchlist = async () => {
+    const response = await fetch(
+      `/api/watchlist/${watchlistId}?userId=${userId}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({
+          watchlistName,
+          watchlistDescription,
+          watchlistMovies: watchlistDetails?.movies,
+          appliedMovies,
+        }),
+      }
+    );
 
-    try {
-      const client = generateClient();
-
-      // Update initial watchlist info
-      await client.graphql({
-        query: updateWatchlist,
-        variables: {
-          input: {
-            id: watchlistId,
-            name: watchlistName,
-            description: watchlistDescription,
-            userId,
-          },
-        },
-      });
-
-      // Create watchlist - movie connections, if applicable
-      const {
-        data: {
-          listMovies: { items: allMovies },
-        },
-      }: any = await client.graphql({
-        query: listMovies,
-      });
-
-      const prevWatchlistMovies = watchlistDetails?.movies || [];
-
-      await Promise.all(
-        appliedMovies.map(async (movie) => {
-          // Do not create new watchlist - movie connection if already existing
-          const isExisting =
-            prevWatchlistMovies.find((prev) => prev.id === movie.id) !==
-            undefined;
-
-          if (isExisting) return;
-
-          const currentMovie = allMovies.find(
-            (temp: any) => temp.tmdbId === movie.id
-          );
-
-          let movieId = "";
-
-          if (!currentMovie) {
-            const {
-              data: { createMovie: createdMovie },
-            }: any = await client.graphql({
-              query: createMovie,
-              variables: {
-                input: {
-                  tmdbId: movie.id,
-                  title: movie.title,
-                  releaseDate: movie.releaseDate,
-                  rating: movie.rating,
-                  posterUrl: movie.posterUrl,
-                },
-              },
-            });
-
-            movieId = createdMovie.id;
-          } else {
-            movieId = currentMovie.id;
-          }
-
-          await client.graphql({
-            query: createWatchlistMovies,
-            variables: {
-              input: {
-                watchlistId,
-                movieId,
-              },
-            },
-          });
-        })
-      );
-
-      // Delete watchlist - movie connection based on edited selections
-      const {
-        data: {
-          listWatchlistMovies: { items: allWatchlistMovies },
-        },
-      }: any = await client.graphql({
-        query: listWatchlistMovies,
-      });
-
-      const watchlistMoviesToDelete = prevWatchlistMovies.filter((movie) => {
-        const isExisting = appliedMovies.find(
-          (applied) => applied.id === movie.id
-        );
-
-        return !isExisting;
-      });
-
-      await Promise.all(
-        watchlistMoviesToDelete.map(async (movie) => {
-          const movieToDelete = allWatchlistMovies.find(
-            (temp: any) =>
-              temp.movie.tmdbId === movie.id && temp.watchlistId === watchlistId
-          );
-
-          await client.graphql({
-            query: deleteWatchlistMovies,
-            variables: {
-              input: {
-                id: movieToDelete.id,
-              },
-            },
-          });
-        })
-      );
-
-      push(`/watchlists/${watchlistId}`);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsEditInProgress(false);
-    }
+    return response;
   };
+
+  const { mutate: handleEdit, isPending: isEditInProgress } = useMutation({
+    mutationKey: ["edit", watchlistId],
+    mutationFn: patchWatchlist,
+    onSuccess: () => {
+      push(`/watchlists/${watchlistId}`);
+    },
+  });
 
   return (
     <Box
@@ -243,7 +110,7 @@ const EditWatchlistPage: React.FC = () => {
         variant="contained"
         color="secondary"
         className="w-1/4 self-end !mt-[16px]"
-        onClick={handleEdit}
+        onClick={() => handleEdit()}
       >
         Save watchlist
       </Button>

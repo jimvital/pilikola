@@ -7,12 +7,7 @@ import { Box, Button, Card, CardContent, Typography } from "@mui/material";
 
 import { PageLoader } from "@/common";
 import { MovieList } from "@/movies";
-import {
-  getUser,
-  getWatchlist,
-  listWatchlistMovies,
-  watchlistMoviesByWatchlistId,
-} from "@/graphql/queries";
+import { listWatchlistMovies } from "@/graphql/queries";
 import {
   createUserMovies,
   deleteUserMovies,
@@ -38,65 +33,18 @@ const WatchlistDetailsPage: React.FC = () => {
   const fetchWatchlistDetails = async () => {
     if (!watchlistId) return {};
 
-    const client = generateClient();
+    const response = await fetch(
+      `/api/watchlist/${watchlistId}?userId=${userId}`,
+      {
+        method: "GET",
+      }
+    );
 
-    const {
-      data: { getUser: currentUser },
-    }: any = await client.graphql({
-      query: getUser,
-      variables: {
-        cognitoId: userId,
-      },
-    });
+    const watchlistDetails = await response.json();
 
-    const {
-      data: { getWatchlist: watchlistDetails },
-    }: any = await client.graphql({
-      query: getWatchlist,
-      variables: {
-        id: watchlistId,
-      },
-    });
-    const {
-      data: {
-        watchlistMoviesByWatchlistId: { items: watchlistMovies },
-      },
-    }: any = await client.graphql({
-      query: watchlistMoviesByWatchlistId,
-      variables: {
-        watchlistId,
-      },
-    });
+    setWatchedMovies(watchlistDetails.watchedMovies);
 
-    const normalizedMovies = watchlistMovies.map(({ movie }: any) => ({
-      id: movie.tmdbId,
-      dbId: movie.id,
-      title: movie.title,
-      posterUrl: movie.posterUrl,
-      releaseDate: movie.releaseDate,
-      rating: movie.rating,
-    }));
-
-    const watchedMovies = currentUser.allWatched.items
-      .map((watched: any) => ({
-        relationId: watched.id,
-        tmdbId: watched.movie.tmdbId,
-      }))
-      .filter((watched: any) =>
-        normalizedMovies.some(
-          (watchlistMovie: any) => watchlistMovie.id === watched.tmdbId
-        )
-      );
-
-    setWatchedMovies(watchedMovies);
-
-    const averageRating =
-      normalizedMovies.reduce(
-        (acc: number, curr: Movie) => acc + curr.rating,
-        0
-      ) / normalizedMovies.length;
-
-    return { ...watchlistDetails, movies: normalizedMovies, averageRating };
+    return watchlistDetails;
   };
 
   const {
