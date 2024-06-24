@@ -1,13 +1,11 @@
 import React, { useMemo, useState } from "react";
 import { useRouter } from "next/router";
-import { generateClient } from "aws-amplify/api";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Box, Button, Card, CardContent, Typography } from "@mui/material";
 
 import { PageLoader } from "@/common";
 import { MovieList } from "@/movies";
-import { createUserMovies, deleteUserMovies } from "@/graphql/mutations";
 
 const WatchlistDetailsPage: React.FC = () => {
   const {
@@ -20,8 +18,6 @@ const WatchlistDetailsPage: React.FC = () => {
   } = useRouter();
 
   const [watchedMovies, setWatchedMovies] = useState<unknown[]>([]);
-  const [isWatchedInProgress, setIsWatchedInProgress] =
-    useState<boolean>(false);
 
   const fetchWatchlistDetails = async () => {
     if (!watchlistId) return {};
@@ -75,50 +71,35 @@ const WatchlistDetailsPage: React.FC = () => {
     },
   });
 
-  const handleWatched = async (movie: Movie) => {
-    setIsWatchedInProgress(true);
+  const postWatch = async (movie: Movie) => {
+    const isWatched = normalizedWatchedMovies.includes(movie.id);
 
-    try {
-      const client = generateClient();
+    const response = await fetch(`/api/movies/watch`, {
+      method: "POST",
+      body: JSON.stringify({
+        movie,
+        isWatched,
+        watchedMovies,
+        userId,
+      }),
+    });
 
-      const isWatched = normalizedWatchedMovies.includes(movie.id);
-
-      if (isWatched) {
-        const { relationId }: any = watchedMovies.find(
-          (watched: any) => watched.tmdbId === movie.id
-        );
-
-        await client.graphql({
-          query: deleteUserMovies,
-          variables: {
-            input: {
-              id: relationId,
-            },
-          },
-        });
-      } else {
-        await client.graphql({
-          query: createUserMovies,
-          variables: {
-            input: {
-              userCognitoId: userId,
-              movieId: movie.dbId,
-            },
-          },
-        });
-      }
-
-      refetch();
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsWatchedInProgress(false);
-    }
+    return response;
   };
 
   const normalizedWatchedMovies = useMemo(
     () => watchedMovies.map((watched: any) => watched.tmdbId),
     [watchedMovies]
+  );
+
+  const { mutate: handleWatched, isPending: isWatchedInProgress } = useMutation(
+    {
+      mutationKey: ["watch", watchlistId],
+      mutationFn: postWatch,
+      onSuccess: () => {
+        refetch();
+      },
+    }
   );
 
   return (
