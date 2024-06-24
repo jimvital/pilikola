@@ -12,6 +12,7 @@ import {
   createWatchlistMovies,
 } from "@/graphql/mutations";
 import { listMovies } from "@/graphql/queries";
+import { useMutation } from "@tanstack/react-query";
 
 const CreateWatchlistPage: React.FC = () => {
   const {
@@ -23,83 +24,28 @@ const CreateWatchlistPage: React.FC = () => {
   const [appliedMovies, setAppliedMovies] = useState<Movie[]>([]);
   const [watchlistName, setWatchlistName] = useState<string>("");
   const [watchlistDescription, setWatchlistDescription] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const handleCreate = async () => {
-    setIsLoading(true);
+  const postWatchlist = async () => {
+    const response = await fetch("/api/watchlist/create", {
+      method: "POST",
+      body: JSON.stringify({
+        watchlistName,
+        watchlistDescription,
+        userId,
+        appliedMovies,
+      }),
+    });
 
-    try {
-      const client = generateClient();
-
-      const {
-        data: { createWatchlist: createdWatchlist },
-      }: any = await client.graphql({
-        query: createWatchlist,
-        variables: {
-          input: {
-            name: watchlistName,
-            description: watchlistDescription,
-            userId,
-          },
-        },
-      });
-
-      const {
-        data: {
-          listMovies: { items: allMovies },
-        },
-      }: any = await client.graphql({
-        query: listMovies,
-      });
-
-      await Promise.all(
-        appliedMovies.map(async (movie) => {
-          const currentMovie = allMovies.find(
-            (temp: any) => temp.tmdbId === movie.id
-          );
-
-          let movieId = "";
-
-          if (!currentMovie) {
-            const {
-              data: { createMovie: createdMovie },
-            }: any = await client.graphql({
-              query: createMovie,
-              variables: {
-                input: {
-                  tmdbId: movie.id,
-                  title: movie.title,
-                  releaseDate: movie.releaseDate,
-                  rating: movie.rating,
-                  posterUrl: movie.posterUrl,
-                },
-              },
-            });
-
-            movieId = createdMovie.id;
-          } else {
-            movieId = currentMovie.id;
-          }
-
-          await client.graphql({
-            query: createWatchlistMovies,
-            variables: {
-              input: {
-                watchlistId: createdWatchlist.id,
-                movieId,
-              },
-            },
-          });
-        })
-      );
-
-      push(`/watchlists`);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
+    return response;
   };
+
+  const { mutate: handleCreate, isPending } = useMutation({
+    mutationKey: ["create"],
+    mutationFn: postWatchlist,
+    onSuccess: () => {
+      push(`/watchlists`);
+    },
+  });
 
   return (
     <Box
@@ -109,7 +55,7 @@ const CreateWatchlistPage: React.FC = () => {
       flexDirection="column"
       className="overflow-y-auto"
     >
-      {isLoading ? <PageLoader /> : null}
+      {isPending ? <PageLoader /> : null}
       <Typography variant="h4">Create a new watchlist</Typography>
       <TextField
         label="Name"
@@ -138,7 +84,7 @@ const CreateWatchlistPage: React.FC = () => {
         color="secondary"
         className="w-1/4 self-end !mt-[16px]"
         disabled={!watchlistName}
-        onClick={handleCreate}
+        onClick={() => handleCreate()}
       >
         Create watchlist
       </Button>
