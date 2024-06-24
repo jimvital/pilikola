@@ -2,18 +2,12 @@ import React, { useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import { generateClient } from "aws-amplify/api";
 import { useAuthenticator } from "@aws-amplify/ui-react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Box, Button, Card, CardContent, Typography } from "@mui/material";
 
 import { PageLoader } from "@/common";
 import { MovieList } from "@/movies";
-import { listWatchlistMovies } from "@/graphql/queries";
-import {
-  createUserMovies,
-  deleteUserMovies,
-  deleteWatchlist,
-  deleteWatchlistMovies,
-} from "@/graphql/mutations";
+import { createUserMovies, deleteUserMovies } from "@/graphql/mutations";
 
 const WatchlistDetailsPage: React.FC = () => {
   const {
@@ -26,7 +20,6 @@ const WatchlistDetailsPage: React.FC = () => {
   } = useRouter();
 
   const [watchedMovies, setWatchedMovies] = useState<unknown[]>([]);
-  const [isDeleteInProgress, setIsDeleteInProgress] = useState<boolean>(false);
   const [isWatchedInProgress, setIsWatchedInProgress] =
     useState<boolean>(false);
 
@@ -62,59 +55,25 @@ const WatchlistDetailsPage: React.FC = () => {
     return `${watchlistDetails.averageRating.toFixed(1)} / 5`;
   };
 
-  const handleDelete = async () => {
-    setIsDeleteInProgress(true);
+  const deleteWatchlist = async () => {
+    const response = await fetch(`/api/watchlist/delete`, {
+      method: "DELETE",
+      body: JSON.stringify({
+        watchlistId,
+        watchlistMovies: watchlistDetails?.movies,
+      }),
+    });
 
-    try {
-      const client = generateClient();
-
-      // Retrieve watchlist - movie connections
-      const {
-        data: {
-          listWatchlistMovies: { items: allWatchlistMovies },
-        },
-      }: any = await client.graphql({
-        query: listWatchlistMovies,
-      });
-
-      const watchlistMovies = watchlistDetails?.movies || [];
-
-      // Delete watchlist - movie connections
-      await Promise.all(
-        watchlistMovies.map(async (movie) => {
-          const movieToDelete = allWatchlistMovies.find(
-            (temp: any) =>
-              temp.movie.tmdbId === movie.id && temp.watchlistId === watchlistId
-          );
-
-          await client.graphql({
-            query: deleteWatchlistMovies,
-            variables: {
-              input: {
-                id: movieToDelete.id,
-              },
-            },
-          });
-        })
-      );
-
-      // Delete the rest of the watchlist
-      await client.graphql({
-        query: deleteWatchlist,
-        variables: {
-          input: {
-            id: watchlistId,
-          },
-        },
-      });
-
-      push(`/watchlists`);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsDeleteInProgress(false);
-    }
+    return response;
   };
+
+  const { mutate: handleDelete, isPending: isDeleteInProgress } = useMutation({
+    mutationKey: ["delete", watchlistId],
+    mutationFn: deleteWatchlist,
+    onSuccess: () => {
+      push(`/watchlists`);
+    },
+  });
 
   const handleWatched = async (movie: Movie) => {
     setIsWatchedInProgress(true);
@@ -185,7 +144,11 @@ const WatchlistDetailsPage: React.FC = () => {
           >
             Edit
           </Button>
-          <Button variant="outlined" color="error" onClick={handleDelete}>
+          <Button
+            variant="outlined"
+            color="error"
+            onClick={() => handleDelete()}
+          >
             Delete
           </Button>
         </Box>
