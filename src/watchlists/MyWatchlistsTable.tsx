@@ -23,7 +23,7 @@ const MyWatchlistsTable: React.FC = () => {
     return userWatchlists;
   };
 
-  const { data: watchlists, isLoading } = useQuery<Watchlist[]>({
+  const { data: watchlists, isFetching } = useQuery<Watchlist[]>({
     queryKey: ["watchlists-by-user", userId],
     queryFn: fetchUserWatchlists,
     initialData: [],
@@ -49,6 +49,7 @@ const MyWatchlistsTable: React.FC = () => {
       headerName: "Description",
       flex: 0.7,
       sortable: false,
+      renderCell: ({ row }) => row.description || "-",
     },
     {
       field: "actions",
@@ -78,7 +79,7 @@ const MyWatchlistsTable: React.FC = () => {
         },
       }}
       pageSizeOptions={[5, 10]}
-      loading={isLoading}
+      loading={isFetching}
     />
   );
 };
