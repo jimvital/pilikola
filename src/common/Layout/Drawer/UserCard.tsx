@@ -1,41 +1,17 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useRouter } from "next/router";
-import {
-  fetchUserAttributes,
-  FetchUserAttributesOutput,
-} from "aws-amplify/auth";
-import { useQuery } from "@tanstack/react-query";
+import { useAuthenticator } from "@aws-amplify/ui-react";
 import { Card, CardHeader, IconButton, Menu, MenuItem } from "@mui/material";
 import { MoreVert, Person } from "@mui/icons-material";
-import { useAuthenticator } from "@aws-amplify/ui-react";
+
+import { DrawerContext } from "./DrawerContext";
 
 const UserCard: React.FC = () => {
-  const {
-    user: { userId },
-    signOut,
-  } = useAuthenticator((context) => [context.user]);
+  const { userDetails } = useContext(DrawerContext);
+
+  const { signOut } = useAuthenticator((context) => [context.user]);
 
   const { push } = useRouter();
-
-  const syncUserDetails = async () => {
-    const userAttributes = await fetchUserAttributes();
-    const { name, preferred_username: username } = userAttributes;
-
-    await fetch(`/api/user/${userId}`, {
-      method: "POST",
-      body: JSON.stringify({
-        name,
-        username,
-      }),
-    });
-
-    return userAttributes;
-  };
-
-  const { data: userDetails } = useQuery<FetchUserAttributesOutput>({
-    queryKey: ["users", userId],
-    queryFn: syncUserDetails,
-  });
 
   const handleSignOut = () => {
     push(`/`);
@@ -43,7 +19,7 @@ const UserCard: React.FC = () => {
     signOut();
   };
 
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {

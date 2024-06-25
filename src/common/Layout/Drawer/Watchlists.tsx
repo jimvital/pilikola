@@ -1,6 +1,5 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useContext, useMemo, useState } from "react";
 import Link from "next/link";
-import { useAuthenticator } from "@aws-amplify/ui-react";
 import {
   Avatar,
   Box,
@@ -10,14 +9,13 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
 import { List, Search } from "@mui/icons-material";
 import { debounce } from "@mui/material/utils";
 
+import { DrawerContext } from "./DrawerContext";
+
 const Watchlists: React.FC = () => {
-  const {
-    user: { userId },
-  } = useAuthenticator((context) => [context.user]);
+  const { watchlists } = useContext(DrawerContext);
 
   const [searchValue, setSearchValue] = useState<string>("");
 
@@ -26,22 +24,6 @@ const Watchlists: React.FC = () => {
     debounce((value: string) => setSearchValue(value), 500),
     []
   );
-
-  const fetchUserWatchlists = async () => {
-    const response = await fetch(`/api/user/watchlists?userId=${userId}`, {
-      method: "GET",
-    });
-
-    const userWatchlists = await response.json();
-
-    return userWatchlists;
-  };
-
-  const { data: watchlists } = useQuery<Watchlist[]>({
-    queryKey: ["watchlists-by-user", userId],
-    queryFn: fetchUserWatchlists,
-    initialData: [],
-  });
 
   const filteredWatchlists = useMemo(
     () =>

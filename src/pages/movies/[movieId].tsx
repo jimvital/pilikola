@@ -1,12 +1,10 @@
 import React from "react";
 import { useRouter } from "next/router";
-import { generateClient } from "aws-amplify/api";
 import { Box } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 
 import { PageLoader } from "@/common";
 import { MovieCast, MovieList, MovieSummary } from "@/movies";
-import { listMovies } from "@/graphql/queries";
 
 const MovieDetailsPage: React.FC = () => {
   const {

@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Box, Card, CardContent, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 
 import { PageLoader } from "@/common";
+import { DrawerContext } from "@/common/Layout/Drawer";
 import { MovieList } from "@/movies";
 
 const Home: React.FC = () => {
+  const { isDrawerLoading } = useContext(DrawerContext);
+
   const fetchTrendingMovies = async () => {
     const response = await fetch("/api/movies/trending", {
       method: "GET",
@@ -15,10 +18,11 @@ const Home: React.FC = () => {
     return data;
   };
 
-  const { data: trendingMovies, isLoading } = useQuery({
-    queryKey: ["trending"],
-    queryFn: fetchTrendingMovies,
-  });
+  const { data: trendingMovies, isFetching: isFetchingTrendingMovies } =
+    useQuery({
+      queryKey: ["trending"],
+      queryFn: fetchTrendingMovies,
+    });
 
   return (
     <Box height="100vh" padding="24px" display="flex" flexDirection="column">
@@ -28,7 +32,7 @@ const Home: React.FC = () => {
           <Typography>Browse movies and add them to watchlists</Typography>
         </CardContent>
       </Card>
-      {isLoading ? <PageLoader /> : null}
+      {isFetchingTrendingMovies || isDrawerLoading ? <PageLoader /> : null}
       <MovieList
         movies={trendingMovies}
         containerClassName="flex flex-col max-h-[calc(100%-124px)]"
