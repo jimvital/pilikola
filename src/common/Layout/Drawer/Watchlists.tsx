@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
-import { generateClient } from "aws-amplify/api";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import {
   Avatar,
@@ -14,8 +13,6 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { List, Search } from "@mui/icons-material";
 import { debounce } from "@mui/material/utils";
-
-import { watchlistsByUserId } from "@/graphql/queries";
 
 const Watchlists: React.FC = () => {
   const {
@@ -31,17 +28,11 @@ const Watchlists: React.FC = () => {
   );
 
   const fetchUserWatchlists = async () => {
-    const client = generateClient();
-    const {
-      data: {
-        watchlistsByUserId: { items: userWatchlists },
-      },
-    }: any = await client.graphql({
-      query: watchlistsByUserId,
-      variables: {
-        userId,
-      },
+    const response = await fetch(`/api/user/watchlists?userId=${userId}`, {
+      method: "GET",
     });
+
+    const userWatchlists = await response.json();
 
     return userWatchlists;
   };

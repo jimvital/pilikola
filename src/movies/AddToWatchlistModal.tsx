@@ -60,33 +60,15 @@ const AddToWatchlistModal: React.FC<AddToWatchlistModalProps> = ({
     []
   );
 
-  const fetchUserWatchlists = async () => {
-    const client = generateClient();
+  const fetchUserWatchlistsWithMovie = async () => {
+    const response = await fetch(
+      `/api/user/watchlists-with-movies?userId=${userId}&movieId=${movie.id}`,
+      {
+        method: "GET",
+      }
+    );
 
-    const {
-      data: {
-        watchlistsByUserId: { items: userWatchlists },
-      },
-    }: any = await client.graphql({
-      query: watchlistsByUserId,
-      variables: {
-        userId,
-      },
-    });
-
-    const {
-      data: {
-        listMovies: { items: filteredMovies },
-      },
-    }: any = await client.graphql({
-      query: listMovies,
-      variables: {
-        filter: { tmdbId: { eq: movie.id } },
-      },
-    });
-
-    const listedIn =
-      filteredMovies.length > 0 ? filteredMovies[0].listedIn.items : [];
+    const { userWatchlists, listedIn } = await response.json();
 
     const movieListedIn = listedIn.map((listed: any) => ({
       value: listed.watchlistId,
@@ -99,8 +81,8 @@ const AddToWatchlistModal: React.FC<AddToWatchlistModalProps> = ({
   };
 
   const { data: watchlists, isFetching } = useQuery<Watchlist[]>({
-    queryKey: ["watchlists-by-user-movie", userId, movie.id],
-    queryFn: fetchUserWatchlists,
+    queryKey: ["watchlists-with-user-movie", userId, movie.id],
+    queryFn: fetchUserWatchlistsWithMovie,
     initialData: [],
   });
 

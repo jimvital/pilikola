@@ -21,7 +21,7 @@ const UserCard: React.FC = () => {
     const userAttributes = await fetchUserAttributes();
     const { name, preferred_username: username } = userAttributes;
 
-    await fetch(`/api/users/${userId}`, {
+    await fetch(`/api/user/${userId}`, {
       method: "POST",
       body: JSON.stringify({
         name,

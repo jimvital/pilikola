@@ -1,13 +1,10 @@
 import React from "react";
-import { generateClient } from "aws-amplify/api";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
-import { Delete, Edit } from "@mui/icons-material";
-
-import { watchlistsByUserId } from "@/graphql/queries";
+import { Edit } from "@mui/icons-material";
 
 const MyWatchlistsTable: React.FC = () => {
   const {
@@ -17,18 +14,11 @@ const MyWatchlistsTable: React.FC = () => {
   const router = useRouter();
 
   const fetchUserWatchlists = async () => {
-    const client = generateClient();
-
-    const {
-      data: {
-        watchlistsByUserId: { items: userWatchlists },
-      },
-    }: any = await client.graphql({
-      query: watchlistsByUserId,
-      variables: {
-        userId,
-      },
+    const response = await fetch(`/api/user/watchlists?userId=${userId}`, {
+      method: "GET",
     });
+
+    const userWatchlists = await response.json();
 
     return userWatchlists;
   };
