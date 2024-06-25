@@ -3,7 +3,7 @@ import fetchTmdb from "@/utils/fetchTmdb";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const movieId = req.query.movieId as string;
+    const { movieId } = req.query;
 
     const movie = await fetchTmdb(
       `movie/${movieId}`,

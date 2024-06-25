@@ -1,16 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
-import { generateClient } from "aws-amplify/api";
 import {
   fetchUserAttributes,
   FetchUserAttributesOutput,
 } from "aws-amplify/auth";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardHeader, IconButton, Menu, MenuItem } from "@mui/material";
 import { MoreVert, Person } from "@mui/icons-material";
 import { useAuthenticator } from "@aws-amplify/ui-react";
-
-import { createUser } from "@/graphql/mutations";
-import { getUser } from "@/graphql/queries";
 
 const UserCard: React.FC = () => {
   const {
@@ -20,46 +17,25 @@ const UserCard: React.FC = () => {
 
   const { push } = useRouter();
 
-  const [userDetails, setUserDetails] = useState<FetchUserAttributesOutput>({});
+  const syncUserDetails = async () => {
+    const userAttributes = await fetchUserAttributes();
+    const { name, preferred_username: username } = userAttributes;
 
-  useEffect(() => {
-    const syncUserDetails = async () => {
-      try {
-        const data = await fetchUserAttributes();
-        const { name, preferred_username: username } = data;
+    await fetch(`/api/users/${userId}`, {
+      method: "POST",
+      body: JSON.stringify({
+        name,
+        username,
+      }),
+    });
 
-        const client = generateClient();
+    return userAttributes;
+  };
 
-        const {
-          data: { getUser: currentUser },
-        }: any = await client.graphql({
-          query: getUser,
-          variables: {
-            cognitoId: userId,
-          },
-        });
-
-        if (!currentUser) {
-          await client.graphql({
-            query: createUser,
-            variables: {
-              input: {
-                cognitoId: userId,
-                name,
-                username,
-              },
-            },
-          });
-        }
-
-        setUserDetails(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    syncUserDetails();
-  }, [userId]);
+  const { data: userDetails } = useQuery<FetchUserAttributesOutput>({
+    queryKey: ["users", userId],
+    queryFn: syncUserDetails,
+  });
 
   const handleSignOut = () => {
     push(`/`);
@@ -92,7 +68,7 @@ const UserCard: React.FC = () => {
             </Menu>
           </>
         }
-        title={userDetails.name}
+        title={userDetails?.name}
       />
     </Card>
   );
