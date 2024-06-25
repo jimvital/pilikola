@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
 import { generateClient } from "aws-amplify/api";
 import { useAuthenticator } from "@aws-amplify/ui-react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   Box,
   Button,
@@ -48,7 +48,6 @@ const AddToWatchlistModal: React.FC<AddToWatchlistModalProps> = ({
     []
   );
   const [searchValue, setSearchValue] = useState<string>("");
-  const [isAddInProgress, setIsAddInProgress] = useState<boolean>(false);
 
   const validSelectedItems = selectedItems.filter(
     (selected) => !selected.disabled
@@ -94,68 +93,25 @@ const AddToWatchlistModal: React.FC<AddToWatchlistModalProps> = ({
     [watchlists, searchValue]
   );
 
-  const handleAdd = async () => {
-    setIsAddInProgress(true);
+  const postAddToWatchlist = async () => {
+    const response = await fetch(`/api/movies/add-to-watchlist`, {
+      method: "POST",
+      body: JSON.stringify({
+        movie,
+        selectedItems,
+      }),
+    });
 
-    try {
-      const client = generateClient();
-
-      const {
-        data: {
-          listMovies: { items: allMovies },
-        },
-      }: any = await client.graphql({
-        query: listMovies,
-      });
-
-      const currentMovie = allMovies.find(
-        (temp: any) => temp.tmdbId === movie.id
-      );
-
-      let movieId = "";
-
-      if (!currentMovie) {
-        const {
-          data: { createMovie: createdMovie },
-        }: any = await client.graphql({
-          query: createMovie,
-          variables: {
-            input: {
-              tmdbId: movie.id,
-              title: movie.title,
-              releaseDate: movie.releaseDate,
-              rating: movie.rating,
-              posterUrl: movie.posterUrl,
-            },
-          },
-        });
-
-        movieId = createdMovie.id;
-      } else {
-        movieId = currentMovie.id;
-      }
-
-      await Promise.all(
-        selectedItems.map(async (selected) => {
-          await client.graphql({
-            query: createWatchlistMovies,
-            variables: {
-              input: {
-                watchlistId: selected.value,
-                movieId,
-              },
-            },
-          });
-        })
-      );
-
-      onClose();
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsAddInProgress(false);
-    }
+    return response;
   };
+
+  const { mutate: handleAdd, isPending: isAddInProgress } = useMutation({
+    mutationKey: ["add-to-watchlist", movie.id],
+    mutationFn: postAddToWatchlist,
+    onSuccess: () => {
+      onClose();
+    },
+  });
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
@@ -247,7 +203,7 @@ const AddToWatchlistModal: React.FC<AddToWatchlistModalProps> = ({
           variant="contained"
           fullWidth
           disabled={validSelectedItems.length === 0}
-          onClick={handleAdd}
+          onClick={() => handleAdd()}
         >
           Add ({`${validSelectedItems.length} watchlist/s selected`})
         </Button>

@@ -174,6 +174,7 @@ const WatchlistDetailsPage: React.FC = () => {
       <br />
       <MovieList
         movies={watchlistDetails?.movies}
+        className="flex-wrap overflow-y-auto"
         watched={{ watchedMovies: normalizedWatchedMovies, handleWatched }}
       />
     </Box>
