@@ -16,28 +16,12 @@ const MovieDetailsPage: React.FC = () => {
   const fetchMovieDetails = async () => {
     if (!movieId) return {};
 
-    const client = generateClient();
-
-    const {
-      data: {
-        listMovies: { items: filteredMovies },
-      },
-    }: any = await client.graphql({
-      query: listMovies,
-      variables: {
-        filter: { tmdbId: { eq: movieId } },
-      },
-    });
-
-    const listedIn =
-      filteredMovies.length > 0 ? filteredMovies[0].listedIn.items : [];
-
     const response = await fetch(`/api/movies/${movieId}`, {
       method: "GET",
     });
     const data = await response.json();
 
-    return { ...data, listedInCount: listedIn.length };
+    return data;
   };
 
   const { data: movieDetails, isFetching } = useQuery<MovieDetails>({
@@ -57,7 +41,11 @@ const MovieDetailsPage: React.FC = () => {
       {isFetching ? <PageLoader /> : null}
       <MovieSummary movieDetails={movieDetails || ({} as MovieDetails)} />
       <MovieCast movieCast={movieDetails?.cast || []} />
-      <MovieList title="Recommended" movies={movieDetails?.recommendations} />
+      <MovieList
+        title="Recommended"
+        className="flex-wrap overflow-y-auto"
+        movies={movieDetails?.recommendations}
+      />
     </Box>
   );
 };

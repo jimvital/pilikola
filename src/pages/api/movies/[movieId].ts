@@ -1,5 +1,13 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { generateClient } from "aws-amplify/api";
+import { Amplify } from "aws-amplify";
+
 import fetchTmdb from "@/utils/fetchTmdb";
+import { listMovies } from "@/graphql/queries";
+
+import awsExports from "@/aws-exports";
+
+Amplify.configure(awsExports);
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -36,7 +44,23 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         })),
     };
 
-    return res.status(200).json(details);
+    const client = generateClient();
+
+    const {
+      data: {
+        listMovies: { items: filteredMovies },
+      },
+    }: any = await client.graphql({
+      query: listMovies,
+      variables: {
+        filter: { tmdbId: { eq: movieId } },
+      },
+    });
+
+    const listedIn =
+      filteredMovies.length > 0 ? filteredMovies[0].listedIn.items : [];
+
+    return res.status(200).json({ ...details, listedInCount: listedIn.length });
   } catch (error) {
     return res.status(500).send({ message: "Something went wrong!" });
   }
