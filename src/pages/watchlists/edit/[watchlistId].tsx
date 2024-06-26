@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useRouter } from "next/router";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -6,6 +6,7 @@ import { Box, Button, IconButton, TextField, Typography } from "@mui/material";
 import { ArrowBackIosNew } from "@mui/icons-material";
 
 import { PageLoader } from "@/common";
+import { SnackbarContext } from "@/common/Snackbar";
 import { ManageWatchlistMovies } from "@/watchlist";
 
 const EditWatchlistPage: React.FC = () => {
@@ -18,6 +19,8 @@ const EditWatchlistPage: React.FC = () => {
     back,
     push,
   } = useRouter();
+
+  const { handleOpenSnackbar } = useContext(SnackbarContext);
 
   const [appliedMovies, setAppliedMovies] = useState<Movie[]>([]);
   const [watchlistName, setWatchlistName] = useState<string>("");
@@ -65,7 +68,12 @@ const EditWatchlistPage: React.FC = () => {
     mutationKey: ["edit", watchlistId],
     mutationFn: patchWatchlist,
     onSuccess: () => {
+      handleOpenSnackbar("success", "Successfully edited watchlist!");
+
       push(`/watchlists/${watchlistId}`);
+    },
+    onError: () => {
+      handleOpenSnackbar("error", "Failed to edit watchlist");
     },
   });
 

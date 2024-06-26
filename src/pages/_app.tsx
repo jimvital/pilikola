@@ -22,6 +22,7 @@ import awsExports from "@/aws-exports";
 import "@aws-amplify/ui-react/styles.css";
 import "./globals.css";
 import { DrawerContextProvider } from "@/common/Layout/Drawer";
+import { Snackbar, SnackbarContextProvider } from "@/common/Snackbar";
 
 Amplify.configure(awsExports);
 
@@ -76,10 +77,13 @@ export default function MyApp({ Component, pageProps }: AppProps) {
             <Authenticator.Provider>
               <DrawerContextProvider>
                 <MuiThemeProvider theme={darkMuiTheme}>
-                  <CssBaseline />
-                  <Layout>
-                    <Component {...pageProps} />
-                  </Layout>
+                  <SnackbarContextProvider>
+                    <Snackbar />
+                    <CssBaseline />
+                    <Layout>
+                      <Component {...pageProps} />
+                    </Layout>
+                  </SnackbarContextProvider>
                 </MuiThemeProvider>
               </DrawerContextProvider>
             </Authenticator.Provider>

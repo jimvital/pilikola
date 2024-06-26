@@ -1,18 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useRouter } from "next/router";
-import { generateClient } from "aws-amplify/api";
 import { useAuthenticator } from "@aws-amplify/ui-react";
+import { useMutation } from "@tanstack/react-query";
 import { Box, Button, TextField, Typography } from "@mui/material";
 
 import { PageLoader } from "@/common";
+import { SnackbarContext } from "@/common/Snackbar";
 import { ManageWatchlistMovies } from "@/watchlist";
-import {
-  createMovie,
-  createWatchlist,
-  createWatchlistMovies,
-} from "@/graphql/mutations";
-import { listMovies } from "@/graphql/queries";
-import { useMutation } from "@tanstack/react-query";
 
 const CreateWatchlistPage: React.FC = () => {
   const {
@@ -20,6 +14,8 @@ const CreateWatchlistPage: React.FC = () => {
   } = useAuthenticator((context) => [context.user]);
 
   const { push } = useRouter();
+
+  const { handleOpenSnackbar } = useContext(SnackbarContext);
 
   const [appliedMovies, setAppliedMovies] = useState<Movie[]>([]);
   const [watchlistName, setWatchlistName] = useState<string>("");
@@ -43,7 +39,12 @@ const CreateWatchlistPage: React.FC = () => {
     mutationKey: ["create"],
     mutationFn: postWatchlist,
     onSuccess: () => {
+      handleOpenSnackbar("success", "Successfully created watchlist!");
+
       push(`/watchlists`);
+    },
+    onError: () => {
+      handleOpenSnackbar("error", "Failed to create watchlist");
     },
   });
 

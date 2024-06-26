@@ -1,6 +1,5 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useContext, useMemo, useState } from "react";
 import Link from "next/link";
-import { generateClient } from "aws-amplify/api";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
@@ -21,8 +20,7 @@ import { Close, List, Search } from "@mui/icons-material";
 import { debounce } from "@mui/material/utils";
 
 import { PageLoader } from "@/common";
-import { listMovies, watchlistsByUserId } from "@/graphql/queries";
-import { createMovie, createWatchlistMovies } from "@/graphql/mutations";
+import { SnackbarContext } from "@/common/Snackbar";
 
 interface ISelectAddToWatchlist {
   value: string;
@@ -43,6 +41,8 @@ const AddToWatchlistModal: React.FC<AddToWatchlistModalProps> = ({
   const {
     user: { userId },
   } = useAuthenticator((context) => [context.user]);
+
+  const { handleOpenSnackbar } = useContext(SnackbarContext);
 
   const [selectedItems, setSelectedItems] = useState<ISelectAddToWatchlist[]>(
     []
@@ -109,7 +109,12 @@ const AddToWatchlistModal: React.FC<AddToWatchlistModalProps> = ({
     mutationKey: ["add-to-watchlist", movie.id],
     mutationFn: postAddToWatchlist,
     onSuccess: () => {
+      handleOpenSnackbar("success", "Successfully added movie to watchlist/s!");
+
       onClose();
+    },
+    onError: () => {
+      handleOpenSnackbar("error", "Failed to add movie to watchlist/s");
     },
   });
 

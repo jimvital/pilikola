@@ -1,10 +1,11 @@
-import React, { useMemo, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Box, Button, Card, CardContent, Typography } from "@mui/material";
 
 import { PageLoader } from "@/common";
+import { SnackbarContext } from "@/common/Snackbar";
 import { MovieList } from "@/movies";
 
 const WatchlistDetailsPage: React.FC = () => {
@@ -16,6 +17,8 @@ const WatchlistDetailsPage: React.FC = () => {
     query: { watchlistId },
     push,
   } = useRouter();
+
+  const { handleOpenSnackbar } = useContext(SnackbarContext);
 
   const [watchedMovies, setWatchedMovies] = useState<unknown[]>([]);
 
@@ -67,7 +70,12 @@ const WatchlistDetailsPage: React.FC = () => {
     mutationKey: ["delete", watchlistId],
     mutationFn: deleteWatchlist,
     onSuccess: () => {
+      handleOpenSnackbar("success", "Successfully deleted watchlist!");
+
       push(`/watchlists`);
+    },
+    onError: () => {
+      handleOpenSnackbar("error", "Failed to delete watchlist");
     },
   });
 
@@ -96,8 +104,15 @@ const WatchlistDetailsPage: React.FC = () => {
     {
       mutationKey: ["watch", watchlistId],
       mutationFn: postWatch,
-      onSuccess: () => {
+      onSuccess: async (response) => {
         refetch();
+
+        const { message } = await response.json();
+
+        handleOpenSnackbar("success", message);
+      },
+      onError: () => {
+        handleOpenSnackbar("error", "Failed to mark movie");
       },
     }
   );
